@@ -523,6 +523,55 @@ footer a:hover{color:var(--acc-clair)}
   .arow>span{grid-column:1/-1}
   .modal-in{padding:24px 18px}
 }
+/* ============ MOBILE : menu, barre d'action, confort tactile ============ */
+.lang{flex:none;background:none;border:1px solid var(--ligne-f);border-radius:5px;
+  color:var(--txt);font:800 .8rem/1 inherit;letter-spacing:.06em;cursor:pointer;
+  min-width:46px;height:38px;padding:0 10px;transition:all .16s ease}
+.lang:hover{border-color:var(--acc);color:var(--acc-clair)}
+.lang.on{background:var(--acc);color:#160b02;border-color:var(--acc)}
+.burger{display:none;background:none;border:1px solid var(--ligne-f);border-radius:5px;
+  width:46px;height:46px;flex:none;cursor:pointer;padding:0;
+  flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.burger span{display:block;width:20px;height:2px;background:var(--txt);
+  transition:transform .2s ease,opacity .2s ease}
+.burger.on span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.on span:nth-child(2){opacity:0}
+.burger.on span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.menu-mobile{display:none;border-top:1px solid var(--ligne);background:var(--nuit)}
+.menu-mobile.on{display:block}
+.menu-mobile a{display:block;padding:16px 22px;color:var(--txt);text-decoration:none;
+  font-weight:600;font-size:1rem;border-bottom:1px solid var(--ligne)}
+.menu-mobile a:last-child{border-bottom:0}
+.menu-mobile a:active{background:var(--acc-voile);color:var(--acc-clair)}
+
+.barre-bas{display:none;position:fixed;left:0;right:0;bottom:0;z-index:90;gap:10px;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(11,11,12,.95);backdrop-filter:blur(12px);border-top:1px solid var(--ligne)}
+.barre-bas a{display:flex;align-items:center;justify-content:center;gap:8px;
+  min-height:50px;border-radius:6px;font-weight:750;font-size:.97rem;text-decoration:none}
+.bb-tel{flex:0 0 40%;background:transparent;color:var(--txt);border:1px solid var(--ligne-f)}
+.bb-resa{flex:1;background:var(--acc);color:#160b02}
+
+@media(max-width:820px){
+  .burger{display:flex}
+  .nav-cta{display:none}          /* remplacé par la barre du bas */
+  .barre-bas{display:flex}
+  body{padding-bottom:76px}       /* la barre ne masque pas le pied de page */
+  nav{height:64px;gap:14px}
+  /* iOS zoome sur tout champ sous 16px */
+  input,select,textarea{font-size:16px;padding:14px 15px}
+  .filtres select,.filtres input{font-size:16px}
+  /* zones tactiles confortables */
+  .tb-tel{min-height:38px;padding:8px 12px}
+  .btn{padding:15px 24px;min-height:50px}
+  .btn-sm{padding:13px 20px;min-height:46px}
+  .btn-xs{padding:10px 14px;min-height:40px;font-size:.82rem}
+  .hero p.en{margin-top:-8px;font-size:.98rem;color:#b3aca3;padding:12px 14px;
+    border-left-width:3px;background:rgba(244,118,27,.06);border-radius:0 6px 6px 0}
+  h2{font-size:1.72rem}
+  section{padding:56px 0}
+  .lead{font-size:1rem}
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -547,16 +596,31 @@ footer a:hover{color:var(--acc-clair)}
         <span class="logo-txt"><b>Lave-Auto</b><span>du Parc</span></span>
       </a>
       <div class="nav-links">
-        <a href="#forfaits">Forfaits et prix</a>
-        <a href="#etapes">Comment ça marche</a>
-        <a href="#secteurs">Secteurs</a>
-        <a href="#horaires">Horaires</a>
-        <a href="#contact">Nous trouver</a>
-        <a href="#faq">FAQ</a>
+        <a href="#forfaits" data-en="Packages &amp; prices">Forfaits et prix</a>
+        <a href="#etapes" data-en="How it works">Comment ça marche</a>
+        <a href="#secteurs" data-en="Areas">Secteurs</a>
+        <a href="#horaires" data-en="Hours">Horaires</a>
+        <a href="#contact" data-en="Find us">Nous trouver</a>
+        <a href="#faq" data-en="FAQ">FAQ</a>
       </div>
-      <a href="#reservation" class="btn btn-p btn-sm nav-cta">Réserver</a>
+      <a href="#reservation" class="btn btn-p btn-sm nav-cta" data-en="Book">Réserver</a>
+      <button class="lang" id="lang" aria-label="Switch to English" title="English">EN</button>
+      <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="menu-mobile">
+        <span></span><span></span><span></span>
+      </button>
     </nav>
   </div>
+
+  <!-- Menu déroulant, mobile seulement -->
+  <nav class="menu-mobile" id="menu-mobile" aria-label="Menu mobile">
+    <a href="#forfaits" data-en="Packages &amp; prices">Forfaits et prix</a>
+    <a href="#acces" data-en="With or without an appointment">Avec ou sans rendez-vous</a>
+    <a href="#etapes" data-en="How it works">Comment ça marche</a>
+    <a href="#secteurs" data-en="Areas we serve">Secteurs desservis</a>
+    <a href="#horaires" data-en="Hours">Horaires</a>
+    <a href="#contact" data-en="How to find us">Comment nous trouver</a>
+    <a href="#faq" data-en="Frequently asked questions">Questions fréquentes</a>
+  </nav>
 </header>
 
 <main>
@@ -566,20 +630,20 @@ footer a:hover{color:var(--acc-clair)}
   <div class="wrap">
     <div class="hero-in">
       <div class="statut"><span class="pt" id="pt"></span><span id="statut-txt">—</span></div>
-      <h1>Lave-auto et detailing au <em>centre-ville de Montréal</em></h1>
-      <p>Lavage à la main dans le Stationnement Place du Parc, au 3550, avenue du Parc, niveau P2 —
+      <h1 data-en="Car wash &amp; detailing in &lt;em&gt;downtown Montreal&lt;/em&gt;">Lave-auto et detailing au <em>centre-ville de Montréal</em></h1>
+      <p data-en="Hand wash inside the Place du Parc parking garage, 3550 Park Avenue, level P2 — sheltered all year round. Three packages starting at $27. Walk in whenever it suits you, or book a slot and skip the wait.">Lavage à la main dans le Stationnement Place du Parc, au 3550, avenue du Parc, niveau P2 —
          à l'abri toute l'année. Trois forfaits à partir de 27 $. Passez quand ça vous adonne,
          ou réservez votre plage horaire pour ne pas attendre.</p>
-      <p class="en" lang="en">Hand <strong>car wash</strong> &amp; detailing in downtown Montreal —
+      <p class="en" lang="en" data-cache-en="1">Hand <strong>car wash</strong> &amp; detailing in downtown Montreal —
          inside the Place du Parc parking garage, level P2. Walk-ins welcome, or book online.</p>
       <div class="hero-btns">
-        <a href="#reservation" class="btn btn-p">Réserver ma plage horaire</a>
-        <a href="#forfaits" class="btn btn-g">Voir les prix</a>
+        <a href="#reservation" class="btn btn-p" data-en="Book my time slot">Réserver ma plage horaire</a>
+        <a href="#forfaits" class="btn btn-g" data-en="See prices">Voir les prix</a>
       </div>
       <div class="trust">
-        <div><b>Dès 27 $</b><span>Forfait Basic</span></div>
-        <div><b>Sans rendez-vous</b><span>Walk-ins welcome</span></div>
-        <div><b>Avenue du Parc</b><span>Place du Parc, niveau P2</span></div>
+        <div><b data-en="From $27">Dès 27 $</b><span data-en="Basic package">Forfait Basic</span></div>
+        <div><b data-en="Walk-ins">Sans rendez-vous</b><span data-en="Walk-ins welcome">Walk-ins welcome</span></div>
+        <div><b data-en="Park Avenue">Avenue du Parc</b><span data-en="Place du Parc, level P2">Place du Parc, niveau P2</span></div>
       </div>
     </div>
   </div>
@@ -588,20 +652,20 @@ footer a:hover{color:var(--acc-clair)}
 <!-- ============ DEUX FAÇONS DE VENIR ============ -->
 <section id="acces" class="serre" aria-labelledby="t-acces">
   <div class="wrap">
-    <span class="eyebrow">Deux façons de venir</span>
-    <h2 id="t-acces">Avec ou sans rendez-vous</h2>
+    <span class="eyebrow" data-en="Two ways to come in">Deux façons de venir</span>
+    <h2 id="t-acces" data-en="With or without an appointment">Avec ou sans rendez-vous</h2>
     <div class="acces">
       <div class="acces-c">
-        <h3>Sans rendez-vous</h3>
-        <p>Descendez au niveau P2 du stationnement du 3550, avenue du Parc quand ça vous adonne, pendant
+        <h3 data-en="Walk-ins">Sans rendez-vous</h3>
+        <p data-en="Drive down to level P2 of the Place du Parc garage whenever it suits you, during opening hours. First come, first served — the wait depends on how busy we are.">Descendez au niveau P2 du stationnement du 3550, avenue du Parc quand ça vous adonne, pendant
            nos heures d'ouverture. Premier arrivé, premier servi — l'attente dépend de l'achalandage.</p>
-        <a href="#contact" class="btn btn-g btn-sm">Comment nous trouver</a>
+        <a href="#contact" class="btn btn-g btn-sm" data-en="How to find us">Comment nous trouver</a>
       </div>
       <div class="acces-c mise">
-        <h3>Avec rendez-vous</h3>
-        <p>Réservez votre plage en ligne en moins d'une minute. Votre heure vous est gardée,
+        <h3 data-en="By appointment">Avec rendez-vous</h3>
+        <p data-en="Book your slot online in under a minute. Your time is held for you, you skip the line, and we text you as soon as your vehicle is ready.">Réservez votre plage en ligne en moins d'une minute. Votre heure vous est gardée,
            vous ne faites aucune file et on vous texte dès que le véhicule est prêt.</p>
-        <a href="#reservation" class="btn btn-p btn-sm">Réserver ma plage horaire</a>
+        <a href="#reservation" class="btn btn-p btn-sm" data-en="Book my time slot">Réserver ma plage horaire</a>
       </div>
     </div>
   </div>
@@ -610,9 +674,9 @@ footer a:hover{color:var(--acc-clair)}
 <!-- ============ FORFAITS ET PRIX ============ -->
 <section id="forfaits" class="bord-haut" aria-labelledby="t-forfaits">
   <div class="wrap">
-    <span class="eyebrow">Forfaits et prix</span>
-    <h2 id="t-forfaits">Trois forfaits, prix selon votre véhicule</h2>
-    <p class="lead">Le prix dépend de la taille du véhicule : une fourgonnette demande plus de temps
+    <span class="eyebrow" data-en="Packages &amp; prices">Forfaits et prix</span>
+    <h2 id="t-forfaits" data-en="Three packages, priced by vehicle size">Trois forfaits, prix selon votre véhicule</h2>
+    <p class="lead" data-en="Pricing depends on the size of your vehicle: a van takes more time and product than a two-seater. Everything is done by hand.">Le prix dépend de la taille du véhicule : une fourgonnette demande plus de temps
        et de produit qu'une 2 places. Tout est fait à la main.</p>
 
     <div class="forfaits">
@@ -621,48 +685,48 @@ footer a:hover{color:var(--acc-clair)}
         <div class="f-bandeau"></div>
         <div class="f-head">
           <h3>Basic</h3>
-          <p class="sous">Lavage extérieur · Nettoyage intérieur</p>
+          <p class="sous" data-en="Exterior wash · Interior cleaning">Lavage extérieur · Nettoyage intérieur</p>
         </div>
         <div class="f-prix">
-          <div><span>2 places</span><b>27 $</b></div>
-          <div><span>5 places, VUS</span><b>35 $</b></div>
-          <div><span>7 places, van, pickup</span><b>42 $</b></div>
+          <div><span data-en="2-seater">2 places</span><b>27 $</b></div>
+          <div><span data-en="5-seater, SUV">5 places, VUS</span><b>35 $</b></div>
+          <div><span data-en="7-seater, van, pickup">7 places, van, pickup</span><b>42 $</b></div>
         </div>
         <div class="f-corps">
           <ul class="check">
-            <li>Lavage extérieur à la main</li>
-            <li>Savon pH neutre, séchage à la microfibre</li>
-            <li>Jantes et pneus nettoyés</li>
-            <li>Aspirateur de l'habitacle et du coffre</li>
-            <li>Tableau de bord essuyé</li>
-            <li>Vitres intérieures et extérieures</li>
+            <li data-en="Exterior hand wash">Lavage extérieur à la main</li>
+            <li data-en="pH-neutral soap, microfibre drying">Savon pH neutre, séchage à la microfibre</li>
+            <li data-en="Wheels and tires cleaned">Jantes et pneus nettoyés</li>
+            <li data-en="Interior and trunk vacuumed">Aspirateur de l'habitacle et du coffre</li>
+            <li data-en="Dashboard wiped down">Tableau de bord essuyé</li>
+            <li data-en="Windows inside and out">Vitres intérieures et extérieures</li>
           </ul>
-          <a href="#reservation" class="btn btn-g" data-pick="Basic">Réserver le Basic</a>
+          <a href="#reservation" class="btn btn-g" data-pick="Basic" data-en="Book the Basic">Réserver le Basic</a>
         </div>
       </article>
 
       <article class="forfait pop">
         <div class="f-bandeau"></div>
-        <span class="f-tag">Le plus choisi</span>
+        <span class="f-tag" data-en="Most popular">Le plus choisi</span>
         <div class="f-head">
           <h3>Super</h3>
-          <p class="sous">Lavage extérieur · Détails intérieurs</p>
+          <p class="sous" data-en="Exterior wash · Interior detailing">Lavage extérieur · Détails intérieurs</p>
         </div>
         <div class="f-prix">
-          <div><span>2 places</span><b>45 $</b></div>
-          <div><span>5 places, VUS</span><b>55 $</b></div>
-          <div><span>7 places, van, pickup</span><b>70 $</b></div>
+          <div><span data-en="2-seater">2 places</span><b>45 $</b></div>
+          <div><span data-en="5-seater, SUV">5 places, VUS</span><b>55 $</b></div>
+          <div><span data-en="7-seater, van, pickup">7 places, van, pickup</span><b>70 $</b></div>
         </div>
         <div class="f-corps">
           <ul class="check">
-            <li>Tout le forfait Basic</li>
-            <li>Détail complet de l'intérieur</li>
-            <li>Plastiques et garnitures nettoyés en profondeur</li>
-            <li>Fentes, contours de sièges et console</li>
-            <li>Portières et seuils détaillés</li>
-            <li>Vitres intérieures sans traces</li>
+            <li data-en="Everything in the Basic package">Tout le forfait Basic</li>
+            <li data-en="Full interior detailing">Détail complet de l'intérieur</li>
+            <li data-en="Plastics and trim deep-cleaned">Plastiques et garnitures nettoyés en profondeur</li>
+            <li data-en="Vents, seat rails and console">Fentes, contours de sièges et console</li>
+            <li data-en="Door panels and sills detailed">Portières et seuils détaillés</li>
+            <li data-en="Streak-free interior glass">Vitres intérieures sans traces</li>
           </ul>
-          <a href="#reservation" class="btn btn-p" data-pick="Super">Réserver le Super</a>
+          <a href="#reservation" class="btn btn-p" data-pick="Super" data-en="Book the Super">Réserver le Super</a>
         </div>
       </article>
 
@@ -670,28 +734,28 @@ footer a:hover{color:var(--acc-clair)}
         <div class="f-bandeau"></div>
         <div class="f-head">
           <h3>Deluxe</h3>
-          <p class="sous">Détails intérieurs · Shampoing · Moteur · Cire</p>
+          <p class="sous" data-en="Interior detailing · Shampoo · Engine · Wax">Détails intérieurs · Shampoing · Moteur · Cire</p>
         </div>
         <div class="f-prix">
-          <div><span>2 places</span><b>200 $</b></div>
-          <div><span>5 places, VUS</span><b>235 $</b></div>
-          <div><span>7 places, van, pickup</span><b>280 $</b></div>
+          <div><span data-en="2-seater">2 places</span><b>200 $</b></div>
+          <div><span data-en="5-seater, SUV">5 places, VUS</span><b>235 $</b></div>
+          <div><span data-en="7-seater, van, pickup">7 places, van, pickup</span><b>280 $</b></div>
         </div>
         <div class="f-corps">
           <ul class="check">
-            <li>Tout le forfait Super</li>
-            <li>Shampoing des tapis et des sièges</li>
-            <li>Extraction en profondeur des tissus</li>
-            <li>Nettoyage du compartiment moteur</li>
-            <li>Cire extérieure appliquée à la main</li>
-            <li>Véhicule livré prêt pour la vente ou l'expo</li>
+            <li data-en="Everything in the Super package">Tout le forfait Super</li>
+            <li data-en="Carpet and seat shampoo">Shampoing des tapis et des sièges</li>
+            <li data-en="Deep fabric extraction">Extraction en profondeur des tissus</li>
+            <li data-en="Engine bay cleaning">Nettoyage du compartiment moteur</li>
+            <li data-en="Hand-applied exterior wax">Cire extérieure appliquée à la main</li>
+            <li data-en="Delivered showroom-ready">Véhicule livré prêt pour la vente ou l'expo</li>
           </ul>
-          <a href="#reservation" class="btn btn-g" data-pick="Deluxe">Réserver le Deluxe</a>
+          <a href="#reservation" class="btn btn-g" data-pick="Deluxe" data-en="Book the Deluxe">Réserver le Deluxe</a>
         </div>
       </article>
 
     </div>
-    <p class="hint" style="margin-top:22px">Taxes en sus. Les véhicules très sales ou avec poils d'animaux
+    <p class="hint" style="margin-top:22px" data-en="Taxes extra. Heavily soiled vehicles or those with pet hair may require a surcharge — we tell you before we start, never after.">Taxes en sus. Les véhicules très sales ou avec poils d'animaux
        peuvent demander un supplément — on vous le dit avant de commencer, jamais après.</p>
   </div>
 </section>
@@ -699,29 +763,29 @@ footer a:hover{color:var(--acc-clair)}
 <!-- ============ ÉTAPES ============ -->
 <section id="etapes" class="bord-haut" aria-labelledby="t-etapes">
   <div class="wrap">
-    <span class="eyebrow">Comment ça marche</span>
-    <h2 id="t-etapes">Quatre étapes, aucune perte de temps</h2>
-    <p class="lead">Que vous passiez sans prévenir ou que vous ayez réservé, la suite est la même : vous laissez les clés et vous continuez votre journée au centre-ville.</p>
+    <span class="eyebrow" data-en="How it works">Comment ça marche</span>
+    <h2 id="t-etapes" data-en="Four steps, zero wasted time">Quatre étapes, aucune perte de temps</h2>
+    <p class="lead" data-en="Whether you walk in unannounced or booked ahead, the rest is the same: you leave the keys and get on with your day downtown.">Que vous passiez sans prévenir ou que vous ayez réservé, la suite est la même : vous laissez les clés et vous continuez votre journée au centre-ville.</p>
     <ol class="flux">
       <li class="flux-e">
         <span class="flux-num" aria-hidden="true">01</span>
-        <h3>Vous passez ou vous réservez</h3>
-        <p>Arrivez sans rendez-vous pendant nos heures, ou réservez en ligne pour que votre plage vous soit gardée.</p>
+        <h3 data-en="Walk in or book ahead">Vous passez ou vous réservez</h3>
+        <p data-en="Walk in during opening hours, or book online to have your slot held for you.">Arrivez sans rendez-vous pendant nos heures, ou réservez en ligne pour que votre plage vous soit gardée.</p>
       </li>
       <li class="flux-e">
         <span class="flux-num" aria-hidden="true">02</span>
-        <h3>Vous déposez les clés</h3>
-        <p>Descendez au niveau P2 du stationnement, remettez les clés et repartez. Rien d'autre à faire.</p>
+        <h3 data-en="You drop off the keys">Vous déposez les clés</h3>
+        <p data-en="Drive down to level P2, hand over the keys and go. Nothing else to do.">Descendez au niveau P2 du stationnement, remettez les clés et repartez. Rien d'autre à faire.</p>
       </li>
       <li class="flux-e">
         <span class="flux-num" aria-hidden="true">03</span>
-        <h3>On s'en occupe</h3>
-        <p>Lavage à la main, produits sans danger pour le fini, inspection avant la remise.</p>
+        <h3 data-en="We take care of it">On s'en occupe</h3>
+        <p data-en="Hand wash, finish-safe products, inspection before handover.">Lavage à la main, produits sans danger pour le fini, inspection avant la remise.</p>
       </li>
       <li class="flux-e">
         <span class="flux-num" aria-hidden="true">04</span>
-        <h3>On vous texte</h3>
-        <p>Un message dès que le véhicule est prêt. Paiement sur place à la récupération.</p>
+        <h3 data-en="We text you">On vous texte</h3>
+        <p data-en="A text as soon as your vehicle is ready. Payment on pickup.">Un message dès que le véhicule est prêt. Paiement sur place à la récupération.</p>
       </li>
     </ol>
   </div>
@@ -731,16 +795,16 @@ footer a:hover{color:var(--acc-clair)}
 <div class="bandeau exp">
   <div class="wrap">
     <div class="txt">
-      <span class="eyebrow">L'expérience Lave-Auto du Parc</span>
-      <h2>Le soin qu'on donne à nos propres autos</h2>
-      <p>Deux seaux, gants de lavage propres, séchage à la microfibre. On prend le temps de bien faire les choses,
+      <span class="eyebrow" data-en="The Lave-Auto du Parc experience">L'expérience Lave-Auto du Parc</span>
+      <h2 data-en="The care we give our own cars">Le soin qu'on donne à nos propres autos</h2>
+      <p data-en="Two buckets, clean wash mitts, microfibre drying. We take the time to do it right, because a well-kept car holds its value longer.">Deux seaux, gants de lavage propres, séchage à la microfibre. On prend le temps de bien faire les choses,
          parce qu'une auto bien entretenue garde sa valeur plus longtemps.</p>
       <ul class="exp-list">
-        <li>Aucune brosse mécanique, aucun risque de rayure tourbillon</li>
-        <li>Produits pH neutre qui n'attaquent ni la cire ni les plastiques</li>
-        <li>Inspection finale avant chaque remise de clés</li>
-        <li>Sans rendez-vous accepté, ou réservez pour éviter toute attente</li>
-        <li>Atelier intérieur au P2 : à l'abri de la pluie, de la neige et du soleil</li>
+        <li data-en="No mechanical brushes, no swirl-mark risk">Aucune brosse mécanique, aucun risque de rayure tourbillon</li>
+        <li data-en="pH-neutral products that spare wax and plastics">Produits pH neutre qui n'attaquent ni la cire ni les plastiques</li>
+        <li data-en="Final inspection before every handover">Inspection finale avant chaque remise de clés</li>
+        <li data-en="Walk-ins welcome, or book to skip the wait">Sans rendez-vous accepté, ou réservez pour éviter toute attente</li>
+        <li data-en="Indoor shop on P2: sheltered from rain, snow and sun">Atelier intérieur au P2 : à l'abri de la pluie, de la neige et du soleil</li>
       </ul>
     </div>
   </div>
@@ -749,18 +813,18 @@ footer a:hover{color:var(--acc-clair)}
 <!-- ============ SECTEURS DESSERVIS (SEO local) ============ -->
 <section id="secteurs" aria-labelledby="t-secteurs">
   <div class="wrap">
-    <span class="eyebrow">Secteurs desservis</span>
-    <h2 id="t-secteurs">Un lave-auto au cœur de Montréal</h2>
+    <span class="eyebrow" data-en="Areas we serve">Secteurs desservis</span>
+    <h2 id="t-secteurs" data-en="A car wash in the heart of Montreal">Un lave-auto au cœur de Montréal</h2>
     <div class="secteurs">
       <div>
-        <p class="lead">Notre atelier est situé au <strong>3550, avenue du Parc</strong>, à la limite du centre-ville
+        <p class="lead" data-en="Our shop sits at &lt;strong&gt;3550 Park Avenue&lt;/strong&gt;, on the edge of downtown and the Plateau-Mont-Royal. It is one of the few car washes with full detailing this close to &lt;strong&gt;downtown Montreal&lt;/strong&gt;: drop your vehicle off before work and pick it up in the evening, without crossing the city.">Notre atelier est situé au <strong>3550, avenue du Parc</strong>, à la limite du centre-ville
            et du Plateau-Mont-Royal. C'est l'un des rares lave-autos avec service de detailing aussi près du
            <strong>centre-ville de Montréal</strong> : vous déposez votre véhicule avant le bureau et vous le
            récupérez le soir, sans traverser la ville.</p>
-        <p class="lead" style="margin-top:16px">On dessert autant les résidents du secteur Milton-Parc et du
+        <p class="lead" style="margin-top:16px" data-en="We serve residents of Milton-Parc and the McGill Ghetto just as much as people working in Ville-Marie, the Quartier des spectacles and Old Montreal.">On dessert autant les résidents du secteur Milton-Parc et du
            McGill Ghetto que les travailleurs de Ville-Marie, du Quartier des spectacles et du Vieux-Montréal.</p>
         <div class="quartiers">
-          <span>Centre-ville / Ville-Marie</span>
+          <span data-en="Downtown / Ville-Marie">Centre-ville / Ville-Marie</span>
           <span>Milton-Parc</span>
           <span>McGill Ghetto</span>
           <span>Quartier des spectacles</span>
@@ -773,7 +837,7 @@ footer a:hover{color:var(--acc-clair)}
         </div>
       </div>
       <div class="trajet">
-        <h3>Temps de trajet approximatif</h3>
+        <h3 data-en="Approximate driving time">Temps de trajet approximatif</h3>
         <dl>
           <dt>Place-des-Arts</dt><dd>6 min</dd>
           <dt>Vieux-Montréal</dt><dd>10 min</dd>
@@ -782,9 +846,9 @@ footer a:hover{color:var(--acc-clair)}
           <dt>Westmount</dt><dd>13 min</dd>
           <dt>Outremont</dt><dd>8 min</dd>
         </dl>
-        <p class="hint" style="margin-top:18px">Atelier au niveau P2 du stationnement intérieur.
+        <p class="hint" style="margin-top:18px" data-en="Shop on level P2 of the indoor garage. Place-des-Arts and Sherbrooke metro stations are within walking distance.">Atelier au niveau P2 du stationnement intérieur.
            Métro Place-des-Arts et Sherbrooke à distance de marche.</p>
-        <a class="btn btn-g btn-sm" style="margin-top:18px" id="lien-maps" href="https://www.google.com/maps/search/?api=1&amp;query=3550+avenue+du+Parc+Montreal" target="_blank" rel="noopener">Ouvrir dans Google Maps</a>
+        <a class="btn btn-g btn-sm" style="margin-top:18px" id="lien-maps" href="https://www.google.com/maps/search/?api=1&amp;query=3550+avenue+du+Parc+Montreal" target="_blank" rel="noopener" data-en="Open in Google Maps">Ouvrir dans Google Maps</a>
       </div>
     </div>
   </div>
@@ -793,9 +857,9 @@ footer a:hover{color:var(--acc-clair)}
 <!-- ============ HORAIRES ============ -->
 <section id="horaires" class="bord-haut" aria-labelledby="t-horaires">
   <div class="wrap">
-    <span class="eyebrow">Horaires</span>
-    <h2 id="t-horaires">Nos heures d'ouverture</h2>
-    <p class="lead" style="margin-bottom:34px">On accepte les clients sans rendez-vous pendant toutes ces heures.
+    <span class="eyebrow" data-en="Hours">Horaires</span>
+    <h2 id="t-horaires" data-en="Our opening hours">Nos heures d'ouverture</h2>
+    <p class="lead" style="margin-bottom:34px" data-en="We take walk-ins throughout all of these hours. Whether you drop by or booked ahead, please arrive at least one hour before closing.">On accepte les clients sans rendez-vous pendant toutes ces heures.
        Que vous passiez ou que vous ayez réservé, présentez-vous au plus tard une heure avant la fermeture.</p>
     <div class="hbox" id="hbox"></div>
   </div>
@@ -804,9 +868,9 @@ footer a:hover{color:var(--acc-clair)}
 <!-- ============ RÉSERVATION ============ -->
 <section id="reservation" class="bord-haut" aria-labelledby="t-resa">
   <div class="wrap">
-    <span class="eyebrow">Réservation</span>
-    <h2 id="t-resa">Réservez votre plage horaire</h2>
-    <p class="lead" style="margin-bottom:34px">La réservation n'est pas obligatoire — vous pouvez simplement passer.
+    <span class="eyebrow" data-en="Booking">Réservation</span>
+    <h2 id="t-resa" data-en="Book your time slot">Réservez votre plage horaire</h2>
+    <p class="lead" style="margin-bottom:34px" data-en="Booking is not required — you can simply walk in. But it guarantees your time and saves you the wait. Your request comes straight to us and we confirm quickly by phone.">La réservation n'est pas obligatoire — vous pouvez simplement passer.
        Mais elle vous garantit votre heure et vous évite l'attente. Votre demande nous est envoyée directement
        et on confirme rapidement par téléphone.</p>
 
@@ -814,57 +878,57 @@ footer a:hover{color:var(--acc-clair)}
       <form id="form" novalidate>
         <div class="fgrid">
           <div class="field">
-            <label for="f-nom">Nom complet <span class="req">*</span></label>
+            <label for="f-nom"><span data-en="Full name">Nom complet</span> <span class="req">*</span></label>
             <input id="f-nom" name="nom" type="text" autocomplete="name" placeholder="Jean Tremblay" required>
           </div>
           <div class="field">
-            <label for="f-tel">Téléphone <span class="req">*</span></label>
+            <label for="f-tel"><span data-en="Phone">Téléphone</span> <span class="req">*</span></label>
             <input id="f-tel" name="tel" type="tel" autocomplete="tel" placeholder="514 555-0199" required>
           </div>
           <div class="field">
-            <label for="f-service">Forfait <span class="req">*</span></label>
+            <label for="f-service"><span data-en="Package">Forfait</span> <span class="req">*</span></label>
             <select id="f-service" name="service" required>
-              <option value="">— Choisir —</option>
-              <option value="Basic">Basic — lavage ext. + nettoyage int.</option>
-              <option value="Super">Super — lavage ext. + détails int.</option>
-              <option value="Deluxe">Deluxe — détails, shampoing, moteur, cire</option>
+              <option value="" data-en="— Select —">— Choisir —</option>
+              <option value="Basic" data-en="Basic — exterior wash + interior cleaning">Basic — lavage ext. + nettoyage int.</option>
+              <option value="Super" data-en="Super — exterior wash + interior detailing">Super — lavage ext. + détails int.</option>
+              <option value="Deluxe" data-en="Deluxe — detailing, shampoo, engine, wax">Deluxe — détails, shampoing, moteur, cire</option>
             </select>
           </div>
           <div class="field">
-            <label for="f-taille">Taille du véhicule <span class="req">*</span></label>
+            <label for="f-taille"><span data-en="Vehicle size">Taille du véhicule</span> <span class="req">*</span></label>
             <select id="f-taille" name="taille" required>
               <option value="">— Choisir —</option>
               <option value="2 places">2 places</option>
               <option value="5 places, VUS">5 places, VUS</option>
-              <option value="7 places, fourgonnette, camionnette">7 places, fourgonnette, camionnette</option>
+              <option value="7 places, fourgonnette, camionnette" data-en="7-seater, van, pickup truck">7 places, fourgonnette, camionnette</option>
             </select>
           </div>
           <div class="field">
-            <label for="f-date">Date <span class="req">*</span></label>
+            <label for="f-date"><span data-en="Date">Date</span> <span class="req">*</span></label>
             <input id="f-date" name="date" type="date" required>
             <span class="err" id="e-date"></span>
           </div>
           <div class="field">
-            <label for="f-heure">Heure <span class="req">*</span></label>
-            <select id="f-heure" name="heure" required><option value="">— Choisir une date d'abord —</option></select>
+            <label for="f-heure"><span data-en="Time">Heure</span> <span class="req">*</span></label>
+            <select id="f-heure" name="heure" required><option value="" data-en="— Pick a date first —">— Choisir une date d'abord —</option></select>
           </div>
           <div class="field full">
-            <label for="f-vehicule">Marque et modèle</label>
+            <label for="f-vehicule" data-en="Make and model">Marque et modèle</label>
             <input id="f-vehicule" name="vehicule" type="text" placeholder="Honda Civic 2021">
           </div>
           <div class="field full">
-            <label for="f-notes">Notes</label>
+            <label for="f-notes" data-en="Notes">Notes</label>
             <textarea id="f-notes" name="notes" placeholder="Ex. : taches sur le siège arrière, poils d'animaux, etc."></textarea>
           </div>
         </div>
 
         <div class="total" id="total">
-          <span>Prix estimé</span><b id="total-val">—</b><i>taxes en sus</i>
+          <span data-en="Estimated price">Prix estimé</span><b id="total-val">—</b><i data-en="plus taxes">taxes en sus</i>
         </div>
 
         <p class="err" id="e-global" style="margin:16px 0 0"></p>
         <div style="margin-top:26px">
-          <button type="submit" class="btn btn-p" id="btn-submit">Confirmer ma demande</button>
+          <button type="submit" class="btn btn-p" id="btn-submit" data-en="Confirm my request">Confirmer ma demande</button>
         </div>
       </form>
 
@@ -874,8 +938,8 @@ footer a:hover{color:var(--acc-clair)}
         <p class="hint" id="recap-note" style="margin-bottom:18px">Appuyez sur un bouton ci-dessous pour nous transmettre la demande.</p>
         <div class="send-row">
           <span id="send-sms-tels"></span>
-          <a class="btn btn-g" id="send-mail" href="#">Envoyer par courriel</a>
-          <button class="btn btn-g" id="send-again" type="button">Nouvelle réservation</button>
+          <a class="btn btn-g" id="send-mail" href="#" data-en="Send by email">Envoyer par courriel</a>
+          <button class="btn btn-g" id="send-again" type="button" data-en="New booking">Nouvelle réservation</button>
         </div>
       </div>
     </div>
@@ -885,65 +949,65 @@ footer a:hover{color:var(--acc-clair)}
 <!-- ============ FAQ ============ -->
 <section id="faq" class="bord-haut" aria-labelledby="t-faq">
   <div class="wrap">
-    <span class="eyebrow">Questions fréquentes</span>
-    <h2 id="t-faq">Ce qu'on nous demande le plus</h2>
+    <span class="eyebrow" data-en="Frequently asked questions">Questions fréquentes</span>
+    <h2 id="t-faq" data-en="What we get asked most">Ce qu'on nous demande le plus</h2>
     <div class="faq">
       <details open>
-        <summary>Où êtes-vous situés au centre-ville de Montréal ?</summary>
-        <p>Notre atelier est <strong>à l'intérieur du Stationnement Place du Parc, au 3550, avenue du Parc,
+        <summary data-en="Where are you located in downtown Montreal?">Où êtes-vous situés au centre-ville de Montréal ?</summary>
+        <p data-en="Our shop is &lt;strong&gt;inside the Place du Parc parking garage, at 3550 Park Avenue, level P2&lt;/strong&gt; — two floors below street level. You can enter from Park Avenue or from Léo-Pariseau Street; both lead to the same garage. Drive down the ramp to P2 and follow our signs. We're minutes from downtown, the Plateau-Mont-Royal, Milton-Parc and the Quartier des spectacles.">Notre atelier est <strong>à l'intérieur du Stationnement Place du Parc, au 3550, avenue du Parc,
            niveau P2</strong> — deux étages sous la rue. Vous pouvez entrer par l'avenue du Parc ou par la
            rue Léo-Pariseau, les deux mènent au même garage. Descendez la rampe jusqu'au P2 et suivez nos
            affiches. On est à quelques minutes du centre-ville, du Plateau-Mont-Royal, de Milton-Parc et
            du Quartier des spectacles.</p>
       </details>
       <details>
-        <summary>Par où entre-t-on dans le stationnement ?</summary>
-        <p>Le Stationnement Place du Parc a <strong>deux entrées</strong> : une sur l'avenue du Parc et
+        <summary data-en="How do I get into the garage?">Par où entre-t-on dans le stationnement ?</summary>
+        <p data-en="The Place du Parc garage has &lt;strong&gt;two entrances&lt;/strong&gt;: one on Park Avenue and one on Léo-Pariseau Street. Both lead to the same underground garage. Drive down to level P2, where our wash bays are.">Le Stationnement Place du Parc a <strong>deux entrées</strong> : une sur l'avenue du Parc et
            une sur la rue Léo-Pariseau. Les deux donnent accès au même garage souterrain. Descendez
            jusqu'au niveau P2, où se trouvent nos postes de lavage.</p>
       </details>
       <details>
-        <summary>Le lave-auto est-il à l'intérieur ?</summary>
-        <p>Oui. Tout se passe au niveau P2 du stationnement intérieur. Vous et votre véhicule êtes à l'abri
+        <summary data-en="Is the car wash indoors?">Le lave-auto est-il à l'intérieur ?</summary>
+        <p data-en="Yes. Everything happens on level P2 of the indoor garage. You and your vehicle stay sheltered from rain, snow and sun, which means we can wash year-round without water freezing on the bodywork.">Oui. Tout se passe au niveau P2 du stationnement intérieur. Vous et votre véhicule êtes à l'abri
            de la pluie, de la neige et du soleil, ce qui permet de laver toute l'année sans que l'eau gèle
            sur la carrosserie.</p>
       </details>
       <details>
-        <summary>Combien coûte un lavage d'auto au centre-ville de Montréal ?</summary>
-        <p>Le forfait Basic commence à 27 $ pour une 2 places, 35 $ pour une 5 places ou un VUS et 42 $ pour
+        <summary data-en="How much does a car wash cost in downtown Montreal?">Combien coûte un lavage d'auto au centre-ville de Montréal ?</summary>
+        <p data-en="The Basic package starts at $27 for a two-seater, $35 for a five-seater or SUV and $42 for a seven-seater, van or pickup. Super runs from $45 to $70 and Deluxe from $200 to $280. Taxes extra.">Le forfait Basic commence à 27 $ pour une 2 places, 35 $ pour une 5 places ou un VUS et 42 $ pour
            une 7 places, une fourgonnette ou une camionnette. Le Super va de 45 $ à 70 $ et le Deluxe de
            200 $ à 280 $. Taxes en sus.</p>
       </details>
       <details>
-        <summary>Pourquoi le prix change-t-il selon le véhicule ?</summary>
-        <p>Parce qu'une fourgonnette demande plus de temps et de produit qu'une 2 places. On a trois
+        <summary data-en="Why does the price depend on the vehicle?">Pourquoi le prix change-t-il selon le véhicule ?</summary>
+        <p data-en="Because a van takes more time and product than a two-seater. We use three categories: two-seaters, then five-seaters and SUVs, then seven-seaters, vans and pickups.">Parce qu'une fourgonnette demande plus de temps et de produit qu'une 2 places. On a trois
            catégories : 2 places, puis 5 places et VUS, puis 7 places, fourgonnettes et camionnettes.</p>
       </details>
       <details>
-        <summary>Quelle est la différence entre Basic, Super et Deluxe ?</summary>
-        <p>Le Basic comprend le lavage extérieur à la main et le nettoyage intérieur. Le Super ajoute un
+        <summary data-en="What's the difference between Basic, Super and Deluxe?">Quelle est la différence entre Basic, Super et Deluxe ?</summary>
+        <p data-en="Basic covers the exterior hand wash and interior cleaning. Super adds full interior detailing. Deluxe adds interior shampoo, engine bay cleaning and hand-applied exterior wax.">Le Basic comprend le lavage extérieur à la main et le nettoyage intérieur. Le Super ajoute un
            détail complet de l'intérieur. Le Deluxe ajoute le shampoing intérieur, le nettoyage du moteur
            et la cire extérieure appliquée à la main.</p>
       </details>
       <details>
-        <summary>Faut-il prendre rendez-vous ?</summary>
-        <p>Non. On accepte les clients sans rendez-vous pendant toutes nos heures d'ouverture, premier
+        <summary data-en="Do I need an appointment?">Faut-il prendre rendez-vous ?</summary>
+        <p data-en="No. We take walk-ins throughout all our opening hours, first come first served. Booking stays available and is recommended at busy times: your slot is guaranteed and you don't wait. Booking online takes under a minute.">Non. On accepte les clients sans rendez-vous pendant toutes nos heures d'ouverture, premier
            arrivé premier servi. La réservation reste possible et recommandée aux heures achalandées :
            votre plage horaire vous est garantie et vous n'attendez pas. Réserver en ligne prend moins
            d'une minute.</p>
       </details>
       <details>
-        <summary>Est-ce un lavage à la main ou une brosse mécanique ?</summary>
-        <p>Tout est fait à la main, avec des savons pH neutre. Aucune brosse mécanique, donc aucun risque
+        <summary data-en="Is it a hand wash or a machine brush?">Est-ce un lavage à la main ou une brosse mécanique ?</summary>
+        <p data-en="Everything is done by hand with pH-neutral soaps. No mechanical brushes, so no risk of swirl marks on your paint.">Tout est fait à la main, avec des savons pH neutre. Aucune brosse mécanique, donc aucun risque
            de rayures tourbillon sur la peinture.</p>
       </details>
       <details>
-        <summary>Do you serve customers in English?</summary>
+        <summary data-en="Do you serve customers in English?">Do you serve customers in English?</summary>
         <p lang="en">Yes — our team serves customers in both French and English. You may also find us
            listed as <strong>Car Wash du Parc</strong> or <strong>Car Wash Place du Parc</strong>.
            We're a hand car wash and detailing shop in downtown Montreal, inside the Place du Parc
            parking garage at 3550 Park Avenue, level P2. Walk-ins welcome, or book online.</p>
-        <p>Oui, on sert la clientèle en français comme en anglais.</p>
+        <p data-en="Yes — we serve customers in both French and English.">Oui, on sert la clientèle en français comme en anglais.</p>
       </details>
     </div>
   </div>
@@ -952,11 +1016,11 @@ footer a:hover{color:var(--acc-clair)}
 <!-- ============ CTA ============ -->
 <div class="bandeau cta">
   <div class="wrap">
-    <span class="eyebrow" style="justify-content:center">Prêt quand vous l'êtes</span>
-    <h2>Confiez-nous votre véhicule</h2>
-    <p>Passez nous voir pendant les heures d'ouverture, réservez en ligne en moins d'une minute, ou appelez-nous.</p>
+    <span class="eyebrow" style="justify-content:center" data-en="Ready when you are">Prêt quand vous l'êtes</span>
+    <h2 data-en="Leave your vehicle with us">Confiez-nous votre véhicule</h2>
+    <p data-en="Drop by during opening hours, book online in under a minute, or give us a call.">Passez nous voir pendant les heures d'ouverture, réservez en ligne en moins d'une minute, ou appelez-nous.</p>
     <div class="cta-btns">
-      <a href="#reservation" class="btn btn-p">Réserver maintenant</a>
+      <a href="#reservation" class="btn btn-p" data-en="Book now">Réserver maintenant</a>
       <span class="cta-tels" id="cta-tels"></span>
     </div>
   </div>
@@ -965,29 +1029,29 @@ footer a:hover{color:var(--acc-clair)}
 <!-- ============ CONTACT ============ -->
 <section id="contact" aria-labelledby="t-contact">
   <div class="wrap">
-    <span class="eyebrow">Contact</span>
-    <h2 id="t-contact">Nous joindre</h2>
+    <span class="eyebrow" data-en="Contact">Contact</span>
+    <h2 id="t-contact" data-en="Get in touch">Nous joindre</h2>
     <div class="ct">
-      <div><h3>Adresse</h3><p id="c-adr"></p><p class="hint" style="margin-top:6px" id="c-niveau"></p></div>
-      <div><h3>Téléphone</h3><p id="c-tels"></p></div>
-      <div><h3>Courriel</h3><p><a id="c-mail" href="#"></a></p></div>
+      <div><h3 data-en="Address">Adresse</h3><p id="c-adr"></p><p class="hint" style="margin-top:6px" id="c-niveau"></p></div>
+      <div><h3 data-en="Phone">Téléphone</h3><p id="c-tels"></p></div>
+      <div><h3 data-en="Email">Courriel</h3><p><a id="c-mail" href="#"></a></p></div>
     </div>
 
     <div class="arrivee">
       <div class="arrivee-txt">
-        <h3>Comment nous trouver</h3>
-        <p>On est <strong>à l'intérieur du Stationnement Place du Parc</strong>, au 3550, avenue du Parc —
+        <h3 data-en="How to find us">Comment nous trouver</h3>
+        <p data-en="We're &lt;strong&gt;inside the Place du Parc parking garage&lt;/strong&gt;, at 3550 Park Avenue — not at street level. You drive in and head down, that simple. The upside: everything happens under cover, winter and summer.">On est <strong>à l'intérieur du Stationnement Place du Parc</strong>, au 3550, avenue du Parc —
            pas au niveau de la rue. Vous entrez avec votre véhicule et vous descendez, c'est aussi simple
            que ça. Avantage : tout se fait à l'abri, hiver comme été.</p>
         <ol class="pas">
-          <li><b>Entrez dans le Stationnement Place du Parc.</b> Deux entrées possibles : par l'<b>avenue du Parc</b> ou par la <b>rue Léo-Pariseau</b>. Prenez celle qui vous arrange.</li>
-          <li><b>Descendez jusqu'au niveau P2</b>, deux étages sous la rue. Suivez les flèches dans la rampe.</li>
-          <li><b>Repérez nos affiches Lave-Auto du Parc</b> une fois au P2 et stationnez devant nos postes de lavage.</li>
-          <li><b>Remettez vos clés</b> à un membre de l'équipe. Avec ou sans rendez-vous, c'est le même point de rencontre.</li>
+          <li><b data-en="Enter the Place du Parc parking garage.">Entrez dans le Stationnement Place du Parc.</b> Deux entrées possibles : par l'<b>avenue du Parc</b> ou par la <b>rue Léo-Pariseau</b>. Prenez celle qui vous arrange.</li>
+          <li><b data-en="Go down to level P2">Descendez jusqu'au niveau P2</b>, deux étages sous la rue. Suivez les flèches dans la rampe.</li>
+          <li><b data-en="Look for our Lave-Auto du Parc signs">Repérez nos affiches Lave-Auto du Parc</b> une fois au P2 et stationnez devant nos postes de lavage.</li>
+          <li><b data-en="Hand over your keys">Remettez vos clés</b> à un membre de l'équipe. Avec ou sans rendez-vous, c'est le même point de rencontre.</li>
         </ol>
-        <p class="hint">Un doute en arrivant ? Appelez-nous, on vous guide en trente secondes.</p>
+        <p class="hint" data-en="Not sure once you're there? Call us — we'll walk you in within thirty seconds.">Un doute en arrivant ? Appelez-nous, on vous guide en trente secondes.</p>
         <div class="send-row" style="margin-top:20px">
-          <a class="btn btn-p btn-sm" id="arr-maps" href="#" target="_blank" rel="noopener">Itinéraire Google Maps</a>
+          <a class="btn btn-p btn-sm" id="arr-maps" href="#" target="_blank" rel="noopener" data-en="Google Maps directions">Itinéraire Google Maps</a>
           <span class="arr-tels" id="arr-tels"></span>
         </div>
       </div>
@@ -995,7 +1059,7 @@ footer a:hover{color:var(--acc-clair)}
         <span class="niv">P2</span>
         <b class="dit-niveau"></b>
         <p>3550, avenue du Parc<br>Montréal, QC</p>
-        <p class="hint" style="margin-top:14px">À l'abri de la pluie, de la neige et du soleil.
+        <p class="hint" style="margin-top:14px" data-en="Sheltered from rain, snow and sun. Your vehicle never freezes while we work.">À l'abri de la pluie, de la neige et du soleil.
            Votre véhicule ne gèle pas pendant qu'on travaille.</p>
       </aside>
     </div>
@@ -1003,6 +1067,15 @@ footer a:hover{color:var(--acc-clair)}
 </section>
 
 </main>
+
+<!-- Barre d'action fixe, mobile seulement -->
+<div class="barre-bas" id="barre-bas">
+  <a class="bb-tel" id="bb-tel" href="#">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2z"/></svg>
+    <span data-en="Call">Appeler</span>
+  </a>
+  <a class="bb-resa" href="#reservation" data-en="Book a slot">Réserver ma plage</a>
+</div>
 
 <footer>
   <div class="wrap">
@@ -1012,25 +1085,25 @@ footer a:hover{color:var(--acc-clair)}
           <span class="logo-mark" aria-hidden="true">P</span>
           <span class="logo-txt"><b>Lave-Auto</b><span>du Parc</span></span>
         </a>
-        <p>Lave-auto et esthétique automobile au centre-ville de Montréal, Stationnement Place du Parc, niveau P2. Avec ou sans rendez-vous, 7 jours sur 7.</p>
+        <p data-en="Hand car wash and auto detailing in downtown Montreal, Place du Parc garage, level P2. With or without an appointment, seven days a week.">Lave-auto et esthétique automobile au centre-ville de Montréal, Stationnement Place du Parc, niveau P2. Avec ou sans rendez-vous, 7 jours sur 7.</p>
         <p lang="en" style="font-size:.86rem;color:#7e7a74">Hand car wash &amp; detailing in downtown Montreal. Also known as <b>Car Wash du Parc</b>.</p>
       </div>
       <div>
-        <h4>Forfaits</h4>
+        <h4 data-en="Packages">Forfaits</h4>
         <a href="#forfaits">Basic — dès 27 $</a>
         <a href="#forfaits">Super — dès 45 $</a>
         <a href="#forfaits">Deluxe — dès 200 $</a>
       </div>
       <div>
-        <h4>Informations</h4>
-        <a href="#acces">Avec ou sans rendez-vous</a>
-        <a href="#etapes">Comment ça marche</a>
-        <a href="#secteurs">Secteurs desservis</a>
-        <a href="#contact">Comment nous trouver</a>
-        <a href="#faq">Questions fréquentes</a>
+        <h4 data-en="Information">Informations</h4>
+        <a href="#acces" data-en="With or without an appointment">Avec ou sans rendez-vous</a>
+        <a href="#etapes" data-en="How it works">Comment ça marche</a>
+        <a href="#secteurs" data-en="Areas we serve">Secteurs desservis</a>
+        <a href="#contact" data-en="How to find us">Comment nous trouver</a>
+        <a href="#faq" data-en="Frequently asked questions">Questions fréquentes</a>
       </div>
       <div>
-        <h4>Coordonnées</h4>
+        <h4 data-en="Contact details">Coordonnées</h4>
         <p id="f-adr"></p>
         <span id="f-tels"></span>
         <a id="f-mail-link" href="#"></a>
@@ -1038,7 +1111,7 @@ footer a:hover{color:var(--acc-clair)}
     </div>
     <div class="copy">
       <span>© <span id="year"></span> Lave-Auto du Parc · 3550, avenue du Parc, niveau P2, Montréal, QC</span>
-      <button class="link-admin" id="open-admin">⚙ Espace administrateur</button>
+      <button class="link-admin" id="open-admin" data-en="⚙ Admin area">⚙ Espace administrateur</button>
     </div>
     <p class="credit">Photos de démonstration : <a href="https://unsplash.com/s/photos/car-detailing" target="_blank" rel="noopener">Unsplash</a> — à remplacer par vos propres photos.</p>
   </div>
@@ -1096,7 +1169,7 @@ footer a:hover{color:var(--acc-clair)}
           <button class="btn btn-g btn-xs" id="adm-csv">Exporter en CSV</button>
         </div>
         <div class="tbl-wrap"><table class="resa"><thead><tr>
-          <th>Date et heure</th><th>Client</th><th>Téléphone</th><th>Forfait</th>
+          <th>Date et heure</th><th>Client</th><th>Téléphone</th><th data-en="Package">Forfait</th>
           <th>Véhicule</th><th>Prix</th><th>Notes</th><th>Statut</th><th>Actions</th>
         </tr></thead><tbody id="adm-tbody"></tbody></table></div>
         <p class="hint" id="adm-source" style="margin-top:14px"></p>
@@ -1182,7 +1255,22 @@ const PRIX = {
 };
 
 /* ============================================================
-   3. ESPACE ADMIN
+   3. NOTIFICATION SUR VOTRE TÉLÉPHONE (ntfy)
+   ------------------------------------------------------------
+   Mettez ici le nom du sujet auquel vous êtes abonné dans l'appli
+   ntfy. Dès qu'une réservation est confirmée, votre téléphone sonne.
+   Laissez vide ("") pour désactiver.
+
+   ⚠️ Sur ntfy.sh, le nom du sujet fait office de mot de passe, et il
+   est visible dans le code de cette page. Prenez-en un long et
+   imprévisible, du genre "laveautoduparc-resa-k7x2m9".
+   ============================================================ */
+const NOTIF = {
+  ntfy: "ldp-resa-p5k6dte9emu8ey"      /* votre sujet ntfy — abonnez-vous à ce nom exact dans l'appli */
+};
+
+/* ============================================================
+   4. ESPACE ADMIN
    ============================================================ */
 const ADMIN = {
   motDePasse: "admin2026"      /* Utilisé UNIQUEMENT en mode "local" (démo), où il est visible
@@ -1226,11 +1314,28 @@ const JOURS = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"
 const JOURS_EN = {lundi:"Monday",mardi:"Tuesday",mercredi:"Wednesday",jeudi:"Thursday",vendredi:"Friday",samedi:"Saturday",dimanche:"Sunday"};
 const $ = s => document.querySelector(s);
 const min = t => { const [h,m] = t.split(":").map(Number); return h*60+m; };
-const fmt = t => t.replace(":", " h ").replace(/ 00$/, "");
+const fmt = t => {
+  if (typeof enAnglais !== "undefined" && enAnglais){
+    const [h, m] = t.split(":").map(Number);
+    const h12 = (h % 12) === 0 ? 12 : (h % 12);
+    return h12 + (m ? ":" + String(m).padStart(2, "0") : "") + (h < 12 ? " a.m." : " p.m.");
+  }
+  return t.replace(":", " h ").replace(/ 00$/, "");
+};
 const jourDe = d => JOURS[(d.getDay()+6)%7];
+/* petit traducteur pour les textes fabriqués par le script */
+const L = (fr, en) => (typeof enAnglais !== "undefined" && enAnglais) ? en : fr;
+const JOURS_AFF = {lundi:"Monday",mardi:"Tuesday",mercredi:"Wednesday",jeudi:"Thursday",
+                   vendredi:"Friday",samedi:"Saturday",dimanche:"Sunday"};
+const nomJour = j => L(j, JOURS_AFF[j]);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const adresseComplete = () => INFO.rue + ", " + INFO.ville + ", " + INFO.province + (INFO.postal ? " " + INFO.postal : "");
 const prixDe = (service, taille) => (PRIX[service] && PRIX[service][taille]) || 0;
+/* les valeurs enregistrées restent en français (cohérence de la base) ;
+   on ne traduit que l'affichage */
+const TAILLE_EN = {"2 places":"2-seater","5 places, VUS":"5-seater, SUV",
+                   "7 places, fourgonnette, camionnette":"7-seater, van, pickup truck"};
+const tailleAff = t => L(t, TAILLE_EN[t] || t);
 
 /* ---------- coordonnées ---------- */
 $("#year").textContent = new Date().getFullYear();
@@ -1245,6 +1350,47 @@ $("#f-mail-link").textContent = INFO.courriel;  $("#f-mail-link").href = "mailto
 const urlMaps = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(adresseComplete());
 $("#lien-maps").href = urlMaps;
 $("#arr-maps").href = urlMaps;
+
+/* ---------- bascule français / anglais ----------
+   Chaque élément traduisible porte un attribut data-en. Au premier
+   basculement on mémorise le français, ensuite on alterne. Pour corriger
+   une traduction, modifiez simplement le data-en dans le HTML.        */
+let enAnglais = false;
+$("#lang").addEventListener("click", () => {
+  enAnglais = !enAnglais;
+  document.querySelectorAll("[data-en]").forEach(el => {
+    if (!el.dataset.fr) el.dataset.fr = el.innerHTML;
+    el.innerHTML = enAnglais ? el.dataset.en : el.dataset.fr;
+  });
+  document.documentElement.lang = enAnglais ? "en-CA" : "fr-CA";
+  /* la ligne déjà en anglais sous le titre ferait doublon en mode EN */
+  const ligneEn = document.querySelector(".hero p.en");
+  if (ligneEn) ligneEn.style.display = enAnglais ? "none" : "";
+  const b = $("#lang");
+  b.textContent = enAnglais ? "FR" : "EN";
+  b.classList.toggle("on", enAnglais);
+  b.setAttribute("aria-label", enAnglais ? "Revenir au français" : "Switch to English");
+  b.title = enAnglais ? "Français" : "English";
+  /* les créneaux et le prix sont générés par script : on les régénère */
+  rendreHoraires(); rendreStatut(); creneaux(); majTotal();
+});
+
+/* ---------- menu mobile et barre d'action du bas ---------- */
+$("#burger").addEventListener("click", () => {
+  const ouvert = $("#menu-mobile").classList.toggle("on");
+  $("#burger").classList.toggle("on", ouvert);
+  $("#burger").setAttribute("aria-expanded", ouvert ? "true" : "false");
+  $("#burger").setAttribute("aria-label", ouvert ? "Fermer le menu" : "Ouvrir le menu");
+});
+document.querySelectorAll("#menu-mobile a").forEach(a => {
+  a.addEventListener("click", () => {
+    $("#menu-mobile").classList.remove("on");
+    $("#burger").classList.remove("on");
+    $("#burger").setAttribute("aria-expanded", "false");
+  });
+});
+$("#bb-tel").href = "tel:" + INFO.tels[0].brut;
+$("#bb-tel").setAttribute("aria-label", "Appeler le " + INFO.tels[0].affiche);
 
 /* ---------- les deux lignes téléphoniques, partout ---------- */
 const lienTel = (t, cls) => '<a href="tel:' + t.brut + '"' + (cls ? ' class="' + cls + '"' : '') +
@@ -1270,9 +1416,9 @@ function rendreHoraires(){
   const auj = jourDe(new Date());
   $("#hbox").innerHTML = JOURS.map(j => {
     const h = HORAIRES[j];
-    const txt = h.ferme_jour ? "Fermé" : fmt(h.ouvre) + " – " + fmt(h.ferme);
+    const txt = h.ferme_jour ? L("Fermé","Closed") : fmt(h.ouvre) + " – " + fmt(h.ferme);
     return '<div class="hrow' + (j===auj?" today":"") + '">' +
-             '<span class="d">' + j + (j===auj?'<span class="bt">aujourd’hui</span>':'') + '</span>' +
+             '<span class="d">' + nomJour(j) + (j===auj?'<span class="bt">' + L("aujourd’hui","today") + '</span>':'') + '</span>' +
              '<span class="t">' + txt + '</span></div>';
   }).join("");
 }
@@ -1282,8 +1428,8 @@ function rendreStatut(){
   const ouvert = !h.ferme_jour && m >= min(h.ouvre) && m < min(h.ferme);
   $("#pt").className = "pt " + (ouvert ? "on" : "off");
   $("#statut-txt").textContent = ouvert
-    ? "Ouvert maintenant · ferme à " + fmt(h.ferme)
-    : "Fermé maintenant · " + prochaineOuverture();
+    ? L("Ouvert maintenant · ferme à ", "Open now · closes at ") + fmt(h.ferme)
+    : L("Fermé maintenant · ", "Closed now · ") + prochaineOuverture();
 }
 function prochaineOuverture(){
   const now = new Date();
@@ -1292,7 +1438,7 @@ function prochaineOuverture(){
     const h = HORAIRES[jourDe(d)];
     if (h.ferme_jour) continue;
     if (i===0 && (now.getHours()*60+now.getMinutes()) >= min(h.ouvre)) continue;
-    return "ouvre " + (i===0 ? "aujourd’hui" : (i===1 ? "demain" : jourDe(d))) + " à " + fmt(h.ouvre);
+    return L("ouvre ","opens ") + (i===0 ? L("aujourd’hui","today") : (i===1 ? L("demain","tomorrow") : nomJour(jourDe(d)))) + L(" à "," at ") + fmt(h.ouvre);
   }
   return "réservation en ligne 24 h/24";
 }
@@ -1307,11 +1453,12 @@ dateInput.max = maxD.toISOString().slice(0,10);
 function creneaux(){
   const v = dateInput.value;
   $("#e-date").classList.remove("show");
-  if (!v){ heureSel.innerHTML = '<option value="">— Choisir une date d’abord —</option>'; return; }
+  if (!v){ heureSel.innerHTML = '<option value="">' + L("— Choisir une date d’abord —","— Pick a date first —") + '</option>'; return; }
   const d = new Date(v + "T12:00:00"), h = HORAIRES[jourDe(d)];
   if (h.ferme_jour){
-    heureSel.innerHTML = '<option value="">Fermé ce jour-là</option>';
-    $("#e-date").textContent = "Nous sommes fermés le " + jourDe(d) + ". Choisissez une autre date.";
+    heureSel.innerHTML = '<option value="">' + L("Fermé ce jour-là","Closed that day") + '</option>';
+    $("#e-date").textContent = L("Nous sommes fermés le " + nomJour(jourDe(d)) + ". Choisissez une autre date.",
+                                 "We are closed on " + nomJour(jourDe(d)) + ". Please pick another date.");
     $("#e-date").classList.add("show"); return;
   }
   const now = new Date();
@@ -1324,8 +1471,8 @@ function creneaux(){
     opts.push('<option value="' + hh + '">' + fmt(hh) + '</option>');
   }
   heureSel.innerHTML = opts.length
-    ? '<option value="">— Choisir —</option>' + opts.join("")
-    : '<option value="">Aucune plage disponible ce jour-là</option>';
+    ? '<option value="">' + L("— Choisir —","— Select —") + '</option>' + opts.join("")
+    : '<option value="">' + L("Aucune plage disponible ce jour-là","No slots left that day") + '</option>';
   if (!opts.length){
     $("#e-date").textContent = "Plus de plage libre pour cette date. Essayez le jour suivant.";
     $("#e-date").classList.add("show");
@@ -1493,15 +1640,15 @@ $("#form").addEventListener("submit", async e => {
   bouton.disabled = false; bouton.textContent = "Confirmer ma demande";
 
   const dateLisible = new Date(d.date + "T12:00:00")
-    .toLocaleDateString("fr-CA", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
+    .toLocaleDateString(L("fr-CA","en-CA"), {weekday:"long", day:"numeric", month:"long", year:"numeric"});
 
   $("#recap-dl").innerHTML = [
-    ["Forfait", d.service],
-    ["Véhicule", d.taille + (d.vehicule ? " · " + d.vehicule : "")],
-    ["Prix", d.prix + " $ + taxes"],
-    ["Date", dateLisible], ["Heure", fmt(d.heure)],
-    ["Nom", d.nom], ["Téléphone", d.tel],
-    d.notes ? ["Notes", d.notes] : null
+    [L("Forfait","Package"), d.service],
+    [L("Véhicule","Vehicle"), tailleAff(d.taille) + (d.vehicule ? " · " + d.vehicule : "")],
+    [L("Prix","Price"), d.prix + L(" $ + taxes"," $ + taxes")],
+    [L("Date","Date"), dateLisible], [L("Heure","Time"), fmt(d.heure)],
+    [L("Nom","Name"), d.nom], [L("Téléphone","Phone"), d.tel],
+    d.notes ? [L("Notes","Notes"), d.notes] : null
   ].filter(Boolean).map(r => "<dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd>").join("");
 
   const msg =
@@ -1512,33 +1659,58 @@ $("#form").addEventListener("submit", async e => {
     "Client : " + d.nom + "\nTelephone : " + d.tel +
     (d.notes ? "\nNotes : " + d.notes : "");
 
+  /* Notification immédiate sur votre téléphone via ntfy.
+     N'empêche jamais la réservation : si l'envoi échoue, on continue. */
+  if (res.distant && NOTIF.ntfy){
+    try {
+      fetch("https://ntfy.sh/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          topic: NOTIF.ntfy,
+          title: "Réservation — " + d.service + " · " + d.prix + " $",
+          message: d.nom + "  ·  " + d.tel + "\n" +
+                   dateLisible + "  à  " + fmt(d.heure) + "\n" +
+                   d.taille + (d.vehicule ? "  ·  " + d.vehicule : "") +
+                   (d.notes ? "\nNotes : " + d.notes : ""),
+          tags: "blue_car",
+          priority: 4,
+          click: INFO.site + "#admin"
+        })
+      }).catch(() => {});
+    } catch(e){ /* sans effet sur la réservation */ }
+  }
+
   if (res.distant){
     /* La réservation est enregistrée : le client n'a RIEN d'autre à faire.
        C'est la base de données qui nous avertit automatiquement. */
     $("#recap").classList.add("ok");
-    $("#recap-titre").textContent = "C'est réservé — merci !";
+    $("#recap-titre").textContent = L("C'est réservé — merci !","You're booked — thank you!");
     $("#recap-note").innerHTML =
-      "Votre demande est enregistrée. On vous appelle sous peu pour confirmer.<br>" +
-      "Numéro de réservation : <b>" + esc(res.id) + "</b>";
+      L("Votre demande est enregistrée. On vous appelle sous peu pour confirmer.<br>Numéro de réservation : ",
+        "Your request is saved. We'll call you shortly to confirm.<br>Booking number: ") +
+      "<b>" + esc(res.id) + "</b>";
     $("#send-sms-tels").innerHTML = "";
     $("#send-mail").style.display = "none";
-    $("#send-again").textContent = "Faire une autre réservation";
+    $("#send-again").textContent = L("Faire une autre réservation","Make another booking");
   } else {
     /* Enregistrement impossible (hors ligne, service indisponible) :
        on offre au client un moyen direct de nous joindre. */
     $("#recap").classList.remove("ok");
-    $("#recap-titre").textContent = "Envoyez-nous votre demande";
-    $("#recap-note").textContent =
+    $("#recap-titre").textContent = L("Envoyez-nous votre demande","Send us your request");
+    $("#recap-note").textContent = L(
       "On n'a pas réussi à enregistrer votre demande automatiquement. Transmettez-la-nous " +
-      "directement avec un des boutons ci-dessous, ça prend deux secondes.";
+      "directement avec un des boutons ci-dessous, ça prend deux secondes.",
+      "We couldn't save your request automatically. Send it to us directly with one of the " +
+      "buttons below — it takes two seconds.");
     $("#send-sms-tels").innerHTML = INFO.tels.map((t,i) =>
       '<a class="btn ' + (i ? "btn-g" : "btn-p") + '" href="sms:' + t.brut +
-      '?&body=' + encodeURIComponent(msg) + '">Texto au ' + esc(t.affiche) + '</a>').join("");
+      '?&body=' + encodeURIComponent(msg) + '">' + L("Texto au ","Text ") + esc(t.affiche) + '</a>').join("");
     $("#send-mail").style.display = "";
     $("#send-mail").href = "mailto:" + INFO.courriel +
       "?subject=" + encodeURIComponent("Réservation — " + d.service + " — " + dateLisible) +
       "&body=" + encodeURIComponent(msg);
-    $("#send-again").textContent = "Modifier ma demande";
+    $("#send-again").textContent = L("Modifier ma demande","Edit my request");
   }
 
   $("#form").style.display = "none";
@@ -1666,7 +1838,7 @@ function rendreTable(){
       '<td>' + esc(r.nom) + '</td>' +
       '<td><a href="tel:' + esc((r.tel||"").replace(/\s/g,"")) + '" style="color:var(--acc-clair)">' + esc(r.tel) + '</a></td>' +
       '<td>' + esc(r.service) + '</td>' +
-      '<td>' + esc(r.taille || "—") + '<br><span style="color:var(--gris-2);font-size:.8rem">' + esc(r.vehicule||"") + '</span></td>' +
+      '<td>' + esc(tailleAff(r.taille) || "—") + '<br><span style="color:var(--gris-2);font-size:.8rem">' + esc(r.vehicule||"") + '</span></td>' +
       '<td><b style="color:var(--acc-clair)">' + prixResa(r) + ' $</b></td>' +
       '<td style="max-width:180px">' + esc(r.notes || "—") + '</td>' +
       '<td><span class="pill ' + esc(st) + '">' + ({nouvelle:"Nouvelle",confirmee:"Confirmée",terminee:"Terminée",annulee:"Annulée"}[st] || st) + '</span></td>' +
