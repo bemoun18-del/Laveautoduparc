@@ -1666,21 +1666,27 @@ $("#form").addEventListener("submit", async e => {
   /* Notification immédiate sur votre téléphone via ntfy.
      N'empêche jamais la réservation : si l'envoi échoue, on continue. */
   if (res.distant && NOTIF.ntfy){
+    /* ⚠️ IMPORTANT : on n'envoie PAS de JSON ici. Un fetch() avec un corps
+       JSON et un en-tête Content-Type personnalisé déclenche une requête
+       CORS "preflight" (OPTIONS) que ntfy.sh ne traite pas correctement
+       depuis un navigateur — la notification échouait silencieusement.
+       On envoie donc le sujet dans l'URL, le message en texte brut, et le
+       titre/les tags/la priorité en paramètres d'URL : aucun en-tête
+       personnalisé, donc aucun preflight, donc ça passe. */
     try {
-      fetch("https://ntfy.sh/", {
+      const msg = d.nom + "  ·  " + d.tel + "\n" +
+                  dateLisible + "  à  " + fmt(d.heure) + "\n" +
+                  d.taille + (d.vehicule ? "  ·  " + d.vehicule : "") +
+                  (d.notes ? "\nNotes : " + d.notes : "");
+      const params = new URLSearchParams({
+        title: "Réservation — " + d.service + " · " + d.prix + " $",
+        tags: "blue_car",
+        priority: "4",
+        click: INFO.site + "#admin"
+      });
+      fetch("https://ntfy.sh/" + encodeURIComponent(NOTIF.ntfy) + "?" + params.toString(), {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          topic: NOTIF.ntfy,
-          title: "Réservation — " + d.service + " · " + d.prix + " $",
-          message: d.nom + "  ·  " + d.tel + "\n" +
-                   dateLisible + "  à  " + fmt(d.heure) + "\n" +
-                   d.taille + (d.vehicule ? "  ·  " + d.vehicule : "") +
-                   (d.notes ? "\nNotes : " + d.notes : ""),
-          tags: "blue_car",
-          priority: 4,
-          click: INFO.site + "#admin"
-        })
+        body: msg
       }).catch(() => {});
     } catch(e){ /* sans effet sur la réservation */ }
   }
