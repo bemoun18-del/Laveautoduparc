@@ -60,7 +60,7 @@
   "image": "https://www.laveautoduparc.ca/apercu.jpg",
   "url": "https://www.laveautoduparc.ca/",
   "telephone": ["+14388551428", "+15142247910"],
-  "email": "bemoun18@gmail.com",
+  "email": "info@laveautoduparc.ca",
   "priceRange": "$$",
   "currenciesAccepted": "CAD",
   "paymentAccepted": "Comptant, carte de débit, carte de crédit",
@@ -444,6 +444,7 @@ input[type=date],input[type=time]{color-scheme:dark}
 .notice.alerte{background:rgba(224,100,90,.09);border-color:rgba(224,100,90,.32);color:#eda49c}
 .saved{display:none;color:var(--ok);font-size:.87rem;font-weight:700;margin-top:14px}
 .saved.show{display:block}
+.saved.err{color:var(--rouge)}
 .login{max-width:380px;margin:14px auto 0}
 .stats-adm{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px}
 .stat{background:var(--charbon-2);border:1px solid var(--ligne);border-radius:8px;padding:16px}
@@ -1181,15 +1182,14 @@ footer a:hover{color:var(--acc-clair)}
 
       <div class="pane" id="p-heures">
         <div id="admin-rows"></div>
-        <p class="saved" id="saved">✓ Heures appliquées sur la page. Téléchargez le fichier pour les rendre permanentes.</p>
+        <p class="saved" id="saved"></p>
         <div class="modal-act">
           <button class="btn btn-p" id="apply">Appliquer</button>
-          <button class="btn btn-g" id="download">⬇ Télécharger le site mis à jour</button>
         </div>
         <div class="notice">
-          <b>Comment ça marche :</b> ce site est un fichier unique. « Appliquer » change l'affichage tout de suite.
-          « Télécharger » génère une nouvelle version du fichier avec vos heures enregistrées à l'intérieur —
-          remplacez l'ancien fichier chez votre hébergeur et vos nouvelles heures sont en ligne pour tout le monde.
+          <b>Comment ça marche :</b> « Appliquer » enregistre vos heures dans la base de données et elles sont
+          visibles tout de suite pour tous vos visiteurs, sur tous les appareils — rien à télécharger,
+          rien à redéployer.
         </div>
       </div>
 
@@ -1236,7 +1236,9 @@ const INFO = {
     { brut: "+14388551428", affiche: "438 855-1428" },
     { brut: "+15142247910", affiche: "514 224-7910" }
   ],
-  courriel:  "bemoun18@gmail.com",              /* ← à remplacer par une adresse d'entreprise */
+  courriel:  "info@laveautoduparc.ca",           /* adresse publique affichée aux clients —
+                                                     différente du courriel de connexion à l'espace admin,
+                                                     qui reste bemoun18@gmail.com (voir supabase-schema.sql) */
   rue:       "3550, avenue du Parc",
   niveau:    "Stationnement Place du Parc, niveau P2",  /* affiché sous l'adresse */
   ville:     "Montréal",
@@ -1446,6 +1448,13 @@ function prochaineOuverture(){
   }
   return "réservation en ligne 24 h/24";
 }
+/* Remplace le contenu de HORAIRES (l'objet reste le même, on ne fait que
+   changer ses valeurs) et rafraîchit tout ce qui en dépend à l'écran. */
+function appliquerHoraires(nouveau){
+  if (!nouveau) return;
+  JOURS.forEach(j => { if (nouveau[j]) Object.assign(HORAIRES[j], nouveau[j]); });
+  rendreHoraires(); rendreStatut(); creneaux(); majLdJson();
+}
 
 /* ---------- créneaux ---------- */
 const dateInput = $("#f-date"), heureSel = $("#f-heure");
@@ -1453,6 +1462,9 @@ const auj0 = new Date(); auj0.setHours(12,0,0,0);
 dateInput.min = auj0.toISOString().slice(0,10);
 const maxD = new Date(auj0); maxD.setDate(maxD.getDate()+60);
 dateInput.max = maxD.toISOString().slice(0,10);
+/* Le formulaire s'ouvre déjà sur la date du jour — le client n'a pas besoin
+   d'aller la choisir lui-même pour voir les plages disponibles tout de suite. */
+dateInput.value = dateInput.min;
 
 function creneaux(){
   const v = dateInput.value;
@@ -1470,7 +1482,7 @@ function creneaux(){
   const maintenant = now.getHours()*60 + now.getMinutes();
   const opts = [];
   for (let t = min(h.ouvre); t <= min(h.ferme) - 60; t += 30){
-    if (memeJour && t < maintenant + 60) continue;
+    if (memeJour && t < maintenant + 30) continue;
     const hh = String(Math.floor(t/60)).padStart(2,"0") + ":" + String(t%60).padStart(2,"0");
     opts.push('<option value="' + hh + '">' + fmt(hh) + '</option>');
   }
@@ -1567,6 +1579,25 @@ const SB = {
     });
     if (res.status === 401 || res.status === 403) throw new Error("Session expirée. Reconnectez-vous.");
     if (!res.ok) throw new Error("Mise à jour impossible (" + res.status + ").");
+  },
+  /* Heures d'ouverture, stockées dans la table "parametres" (voir supabase-parametres.sql).
+     Lecture publique (aucune connexion requise) ; écriture réservée à l'admin. */
+  async lireHoraires(){
+    const res = await fetch(this.base() + "/rest/v1/parametres?select=valeur&cle=eq.horaires", {
+      headers: this.entetes()
+    });
+    if (!res.ok) return null;
+    const j = await res.json().catch(() => []);
+    return (j && j[0] && j[0].valeur) || null;
+  },
+  async majHoraires(valeur, token){
+    const res = await fetch(this.base() + "/rest/v1/parametres?cle=eq.horaires", {
+      method:"PATCH",
+      headers: this.entetes({ "Authorization":"Bearer " + token, "Prefer":"return=minimal" }),
+      body: JSON.stringify({ valeur: valeur })
+    });
+    if (res.status === 401 || res.status === 403) throw new Error("Session expirée. Reconnectez-vous.");
+    if (!res.ok) throw new Error("Enregistrement des heures impossible (" + res.status + ").");
   }
 };
 
@@ -1674,15 +1705,19 @@ $("#form").addEventListener("submit", async e => {
        titre/les tags/la priorité en paramètres d'URL : aucun en-tête
        personnalisé, donc aucun preflight, donc ça passe. */
     try {
-      const msg = d.nom + "  ·  " + d.tel + "\n" +
-                  dateLisible + "  à  " + fmt(d.heure) + "\n" +
-                  d.taille + (d.vehicule ? "  ·  " + d.vehicule : "") +
-                  (d.notes ? "\nNotes : " + d.notes : "");
+      const lignes = [
+        "Client : " + d.nom + "  ·  " + d.tel,
+        "Date : " + dateLisible + "  à  " + fmt(d.heure),
+        "Forfait : " + d.service + "  (" + d.prix + " $)",
+        "Véhicule : " + d.taille + (d.vehicule ? "  ·  " + d.vehicule : "")
+      ];
+      if (d.notes) lignes.push("Notes : " + d.notes);
+      const msg = lignes.join("\n");
+      /* Pas de "click" : la notification n'ouvre rien quand on appuie dessus. */
       const params = new URLSearchParams({
-        title: "Réservation — " + d.service + " · " + d.prix + " $",
+        title: "Nouvelle réservation — " + d.nom,
         tags: "blue_car",
-        priority: "4",
-        click: INFO.site + "#admin"
+        priority: "4"
       });
       fetch("https://ntfy.sh/" + encodeURIComponent(NOTIF.ntfy) + "?" + params.toString(), {
         method: "POST",
@@ -1782,6 +1817,10 @@ $("#adm-go").addEventListener("click", async () => {
     $("#adm-app").style.display = "";
     $("#admin-boite").classList.remove("etroit");
     $("#adm-sous").textContent = "Vos réservations, vos heures d'ouverture et la connexion des données.";
+    /* on relit les heures ici pour être sûr d'afficher la valeur vraiment
+       enregistrée, même si la lecture faite au chargement de la page
+       n'était pas encore terminée. */
+    if (MODE === "supabase") await SB.lireHoraires().then(appliquerHoraires).catch(() => {});
     rendreAdminHeures(); majAide(); rendreTable();
   } catch(e){
     err.textContent = e.message || "Connexion impossible."; err.classList.add("show");
@@ -1910,20 +1949,37 @@ function rendreAdminHeures(){
     c.addEventListener("change", e => e.target.closest(".arow").classList.toggle("closed", e.target.checked));
   });
 }
-$("#apply").addEventListener("click", () => {
+$("#apply").addEventListener("click", async () => {
+  const nouveau = {};
   $("#admin-rows").querySelectorAll(".arow").forEach(r => {
-    HORAIRES[r.dataset.j] = {
+    nouveau[r.dataset.j] = {
       ouvre: r.querySelector(".t-o").value || "08:00",
       ferme: r.querySelector(".t-f").value || "19:00",
       ferme_jour: r.querySelector(".t-c").checked
     };
   });
-  rendreHoraires(); rendreStatut(); creneaux();
-  $("#saved").classList.add("show");
+  appliquerHoraires(nouveau);   /* l'affichage change tout de suite, ici même */
+  const saved = $("#saved"), btn = $("#apply");
+  saved.classList.remove("show", "err");
+  if (MODE === "supabase"){
+    btn.disabled = true; btn.textContent = "Enregistrement…";
+    try {
+      await SB.majHoraires(HORAIRES, jeton);
+      saved.textContent = "✓ Heures enregistrées — visibles tout de suite pour tous vos visiteurs.";
+      saved.classList.add("show");
+    } catch(e){
+      saved.textContent = "⚠ Affiché ici, mais pas enregistré pour vos visiteurs : " + e.message;
+      saved.classList.add("show", "err");
+    }
+    btn.disabled = false; btn.textContent = "Appliquer";
+  } else {
+    saved.textContent = "✓ Heures appliquées sur cet appareil (mode local — connectez Supabase pour que ce soit permanent).";
+    saved.classList.add("show");
+  }
 });
 
-/* ---------- régénération du fichier ---------- */
-function ldJson(){
+/* ---------- données structurées (SEO) — tenues à jour avec les heures réelles ---------- */
+function ldJsonObjet(){
   const groupes = {};
   JOURS.forEach(j => {
     const h = HORAIRES[j];
@@ -1946,7 +2002,7 @@ function ldJson(){
            Math.min.apply(null, v) + ',"maxPrice":' + Math.max.apply(null, v) + '}}';
   }).join(",\n");
 
-  return '<!-- LDJSON_DEBUT -->\n<script type="application/ld+json">\n{\n' +
+  return '{\n' +
     '  "@context": "https://schema.org",\n  "@type": "AutoWash",\n' +
     '  "@id": ' + JSON.stringify(INFO.site + "#entreprise") + ',\n' +
     '  "name": ' + JSON.stringify(INFO.nom) + ',\n' +
@@ -1968,28 +2024,29 @@ function ldJson(){
     '  "areaServed": [\n' + secteurs + '\n  ],\n' +
     '  "hasOfferCatalog": {\n    "@type": "OfferCatalog",\n    "name": "Forfaits de lavage et de detailing",\n' +
     '    "itemListElement": [\n' + offres + '\n    ]\n  },\n' +
-    '  "openingHoursSpecification": [\n' + spec + '\n  ]\n}\n' +
-    '<\/script>\n<!-- LDJSON_FIN -->';
+    '  "openingHoursSpecification": [\n' + spec + '\n  ]\n}';
 }
-$("#download").addEventListener("click", () => {
-  const blocJS = "/* HORAIRES_DEBUT */\nconst HORAIRES = " + JSON.stringify(HORAIRES, null, 2) + ";\n/* HORAIRES_FIN */";
-  const src = window.__SRC
-    .replace(/\/\* HORAIRES_DEBUT \*\/[\s\S]*?\/\* HORAIRES_FIN \*\//, () => blocJS)
-    .replace(/<!-- LDJSON_DEBUT -->[\s\S]*?<!-- LDJSON_FIN -->/, () => ldJson());
-  const url = URL.createObjectURL(new Blob([src], {type:"text/html;charset=utf-8"}));
-  const a = document.createElement("a");
-  a.href = url; a.download = "index.html"; a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 4000);
-});
+/* Remplace le contenu du bloc de données structurées déjà présent dans le
+   <head> par la version à jour — les moteurs de recherche voient toujours
+   les vraies heures, sans qu'il soit nécessaire de redéployer le fichier. */
+function majLdJson(){
+  const el = document.querySelector('script[type="application/ld+json"]');
+  if (el) el.textContent = ldJsonObjet();
+}
 
 /* ---------- init ---------- */
 rendreHoraires();
 rendreStatut();
+creneaux();
 setInterval(rendreStatut, 60000);
+
+/* Heures : celles écrites ci-dessus servent tant que la base n'a pas répondu
+   (pas d'écran vide le temps du chargement), puis on applique la vraie
+   valeur enregistrée par l'admin — la même pour tous les visiteurs. */
+if (MODE === "supabase"){
+  SB.lireHoraires().then(appliquerHoraires).catch(() => {});
+}
 });
 </script>
-
-<!-- Capture de la source d'origine — doit rester le DERNIER script de la page -->
-<script>window.__SRC = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;</script>
 </body>
 </html>
