@@ -1823,19 +1823,24 @@ $("#form").addEventListener("submit", async e => {
        titre/les tags/la priorité en paramètres d'URL : aucun en-tête
        personnalisé, donc aucun preflight, donc ça passe. */
     try {
+      const dateCourte = new Date(d.date + "T12:00:00")
+        .toLocaleDateString("fr-CA", {weekday:"short", day:"numeric", month:"short"});
       const lignes = [
-        "Client : " + d.nom + "  ·  " + d.tel,
-        "Date : " + dateLisible + "  à  " + fmt(d.heure),
-        "Forfait : " + d.service + "  (" + d.prix + " $ + taxes)",
-        "Véhicule : " + d.taille + (d.vehicule ? "  ·  " + d.vehicule : "")
+        "👤 " + d.nom + "  ·  " + d.tel,
+        "📅 " + dateLisible + "  à  " + fmt(d.heure),
+        "🧽 " + d.service + "  ·  " + d.prix + " $ + taxes",
+        "🚗 " + d.taille + (d.vehicule ? "  ·  " + d.vehicule : "")
       ];
-      if (d.notes) lignes.push("Notes : " + d.notes);
+      if (d.notes) lignes.push("📝 " + d.notes);
       const msg = lignes.join("\n");
-      /* Pas de "click" : la notification n'ouvre rien quand on appuie dessus. */
+      /* On touche la notification : elle ouvre directement l'espace admin,
+         onglet Réservations (même page, ancre #admin — pas d'en-tête
+         personnalisé donc toujours aucun preflight CORS). */
       const params = new URLSearchParams({
-        title: "Nouvelle réservation — " + d.nom,
-        tags: "blue_car",
-        priority: "4"
+        title: "🆕 Réservation — " + d.nom + "  ·  " + dateCourte + " " + fmt(d.heure),
+        tags: "new,blue_car",
+        priority: "4",
+        click: location.origin + location.pathname + "#admin"
       });
       fetch("https://ntfy.sh/" + encodeURIComponent(NOTIF.ntfy) + "?" + params.toString(), {
         method: "POST",
