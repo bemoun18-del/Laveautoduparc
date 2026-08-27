@@ -9,7 +9,7 @@
      ⚠️ À COMPLÉTER : code postal (bloc INFO dans le <script>) et domaine réel.
      ================================================================ -->
 <title>Lave-Auto du Parc | Car wash centre-ville Montréal, av. du Parc</title>
-<meta name="description" content="Lave-Auto du Parc — car wash et detailing à la main au centre-ville de Montréal, Stationnement Place du Parc, 3535 av. du Parc, niveau P2. Avec ou sans rendez-vous, de 22 $ à 275 $ + taxes.">
+<meta name="description" content="Lave-Auto du Parc — car wash et detailing à la main au centre-ville de Montréal, Stationnement Place du Parc, 3535 av. du Parc, niveau P2. Avec ou sans rendez-vous, de 27 $ à 280 $ + taxes.">
 <meta name="keywords" content="lave-auto du Parc, car wash du Parc, lave-auto centre-ville Montréal, car wash downtown Montreal, car wash avenue du Parc, lave-auto sans rendez-vous Montréal, car wash Place du Parc, hand car wash Montreal, detailing automobile Montréal, car detailing downtown Montreal, lave-auto Milton-Parc, car wash Plateau Mont-Royal">
 <meta name="language" content="fr-CA">
 <meta name="og:locale:alternate" content="en_CA">
@@ -26,7 +26,7 @@
 <meta property="og:locale" content="fr_CA">
 <meta property="og:site_name" content="Lave-Auto du Parc">
 <meta property="og:title" content="Lave-Auto du Parc | Car wash centre-ville Montréal">
-<meta property="og:description" content="Car wash et lavage à la main au centre-ville de Montréal, Stationnement Place du Parc, niveau P2. Avec ou sans rendez-vous, à partir de 22 $ + taxes.">
+<meta property="og:description" content="Car wash et lavage à la main au centre-ville de Montréal, Stationnement Place du Parc, niveau P2. Avec ou sans rendez-vous, à partir de 27 $ + taxes.">
 <meta property="og:url" content="https://www.laveautoduparc.ca/">
 <meta property="og:image" content="https://www.laveautoduparc.ca/apercu.jpg">
 <meta property="og:image:alt" content="Auto lustrée après un lavage chez Lave-Auto du Parc">
@@ -89,9 +89,11 @@
     "@type": "OfferCatalog",
     "name": "Forfaits de lavage et de detailing",
     "itemListElement": [
-      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Basic","description":"Lavage extérieur à la main et nettoyage intérieur."},"priceSpecification":{"@type":"PriceSpecification","priceCurrency":"CAD","minPrice":22,"maxPrice":37}},
-      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Super","description":"Lavage extérieur à la main et détails intérieurs."},"priceSpecification":{"@type":"PriceSpecification","priceCurrency":"CAD","minPrice":40,"maxPrice":65}},
-      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Deluxe","description":"Lavage extérieur, détails intérieurs, shampoing intérieur, moteur et cire extérieure."},"priceSpecification":{"@type":"PriceSpecification","priceCurrency":"CAD","minPrice":195,"maxPrice":275}}
+      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Basic","description":"Lavage extérieur à la main et nettoyage intérieur."},"priceSpecification":{"@type":"PriceSpecification","priceCurrency":"CAD","minPrice":27,"maxPrice":42}},
+      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Super","description":"Lavage extérieur à la main et détails intérieurs."},"priceSpecification":{"@type":"PriceSpecification","priceCurrency":"CAD","minPrice":45,"maxPrice":70}},
+      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Deluxe","description":"Lavage extérieur, détails intérieurs, shampoing intérieur, moteur et cire extérieure."},"priceSpecification":{"@type":"PriceSpecification","priceCurrency":"CAD","minPrice":200,"maxPrice":280}},
+      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Restauration des phares","description":"Polissage des phares jaunis ou opaques."},"priceSpecification":{"@type":"PriceSpecification","priceCurrency":"CAD","price":90}},
+      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Traitement hydrophobe","description":"Traitement hydrophobe pour pare-brise et vitres."},"priceSpecification":{"@type":"PriceSpecification","priceCurrency":"CAD","price":55}}
     ]
   },
   "openingHoursSpecification": [
@@ -117,7 +119,7 @@
     {"@type":"Question","name":"Le lave-auto est-il à l'intérieur ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Notre atelier est situé au niveau P2, à l'intérieur du stationnement. Votre véhicule est donc à l'abri de la pluie, de la neige et du soleil."}},
     {"@type":"Question","name":"Dois-je prendre rendez-vous ?","acceptedAnswer":{"@type":"Answer","text":"Non. Les clients sans rendez-vous sont les bienvenus pendant nos heures d'ouverture. La réservation est toutefois recommandée pendant les périodes achalandées si vous souhaitez éviter l'attente."}},
     {"@type":"Question","name":"Est-ce un lavage à la main ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Tous nos lavages sont effectués à la main avec des savons pH neutre. Nous n'utilisons pas de brosse mécanique."}},
-    {"@type":"Question","name":"Combien coûte un lavage ?","acceptedAnswer":{"@type":"Answer","text":"Le forfait Basic commence à 22 $, le Super à 40 $ et le Deluxe à 195 $, plus taxes. Le prix varie selon la taille du véhicule."}},
+    {"@type":"Question","name":"Combien coûte un lavage ?","acceptedAnswer":{"@type":"Answer","text":"Le forfait Basic commence à 27 $, le Super à 45 $ et le Deluxe à 200 $, plus taxes. Le prix varie selon la taille du véhicule."}},
     {"@type":"Question","name":"Servez-vous les clients en anglais ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Notre équipe accueille les clients en français et en anglais."}}
   ]
 
@@ -380,6 +382,16 @@ ol.pas li::before{content:counter(pas);position:absolute;left:0;top:-1px;
 .field.full{grid-column:1/-1}
 label{font-size:.78rem;font-weight:700;color:#bdb8b1;letter-spacing:.06em;text-transform:uppercase}
 label .req{color:var(--acc)}
+.extras-choix{display:flex;flex-direction:column;gap:11px;margin-top:2px}
+.extras-choix label{display:flex;align-items:center;gap:10px;font-size:.93rem;font-weight:500;
+  color:var(--txt);letter-spacing:0;text-transform:none;cursor:pointer}
+.extras-choix input[type=checkbox]{width:auto;accent-color:var(--acc);flex-shrink:0}
+.promo-row{display:flex;gap:10px;flex-wrap:wrap}
+.promo-row input{flex:1;min-width:150px;text-transform:uppercase}
+.promo-msg{font-size:.85rem;font-weight:650;margin-top:8px;display:none}
+.promo-msg.show{display:block}
+.promo-msg.ok{color:var(--ok)}
+.promo-msg.err{color:var(--rouge)}
 input,select,textarea{background:var(--charbon-2);border:1px solid var(--ligne);color:var(--txt);
   padding:13px 15px;border-radius:5px;font-size:.95rem;font-family:inherit;width:100%;
   transition:border-color .16s ease,box-shadow .16s ease}
@@ -448,6 +460,13 @@ input[type=date],input[type=time]{color-scheme:dark}
 .ferm-row .txt span{color:var(--gris);display:block;font-size:.82rem;margin-top:2px}
 .ferm-row button{background:none;border:0;color:var(--rouge);cursor:pointer;font-size:1.3rem;line-height:1;padding:4px 8px;flex-shrink:0}
 .ferm-vide{color:var(--gris);font-size:.87rem;padding:6px 0 2px}
+.champ-promo{display:grid;grid-template-columns:1fr .8fr .7fr 1fr 1fr;gap:11px;align-items:end}
+.champ-promo .field label{font-size:.78rem;color:var(--gris)}
+@media(max-width:900px){.champ-promo{grid-template-columns:1fr 1fr}}
+.champ-promo-bas{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;flex-wrap:wrap}
+.champ-promo-bas label{display:flex;align-items:center;gap:7px;font-size:.83rem;color:var(--gris);text-transform:none;letter-spacing:0;cursor:pointer}
+.champ-promo-bas input[type=checkbox]{width:auto;accent-color:var(--acc)}
+.pill.inactif{background:rgba(255,255,255,.08);color:var(--gris)}
 .modal-act{display:flex;gap:11px;flex-wrap:wrap;margin-top:26px;padding-top:24px;border-top:1px solid var(--ligne)}
 .notice{background:rgba(244,118,27,.09);border:1px solid rgba(244,118,27,.3);color:#e8bf96;border-radius:6px;padding:14px 17px;font-size:.86rem;margin-top:20px}
 .notice.alerte{background:rgba(224,100,90,.09);border-color:rgba(224,100,90,.32);color:#eda49c}
@@ -647,13 +666,13 @@ footer a:hover{color:var(--acc-clair)}
          avenue du Parc, au niveau P2, Lave-Auto du Parc vous offre un lavage automobile professionnel,
          toute l'année. Profitez-en pour magasiner : jusqu'à 2 heures de stationnement gratuit dans
          ce garage, relié directement au centre d'achats.</p>
-      <p class="hint" style="margin:-18px 0 24px" data-en="From $22 + tax · With or without an appointment">À partir de 22 $ + taxes · Avec ou sans rendez-vous</p>
+      <p class="hint" style="margin:-18px 0 24px" data-en="From $27 + tax · With or without an appointment">À partir de 27 $ + taxes · Avec ou sans rendez-vous</p>
       <div class="hero-btns">
         <a href="#reservation" class="btn btn-p" data-en="Book now">Réserver maintenant</a>
         <a href="#forfaits" class="btn btn-g" data-en="See our packages">Voir nos forfaits</a>
       </div>
       <div class="trust">
-        <div><b data-en="From $22">Dès 22 $</b><span data-en="Basic package">Forfait Basic</span></div>
+        <div><b data-en="From $27">Dès 27 $</b><span data-en="Basic package">Forfait Basic</span></div>
         <div><b data-en="Hand wash">Lavage à la main</b><span data-en="No mechanical brush">Sans brosse mécanique</span></div>
         <div><b data-en="Downtown Montreal">Centre-ville de Montréal</b><span data-en="3535 Park Avenue · P2">3535, avenue du Parc · P2</span></div>
       </div>
@@ -705,9 +724,9 @@ footer a:hover{color:var(--acc-clair)}
              une voiture propre et soignée.</p>
         </div>
         <div class="f-prix">
-          <div><span data-en="2-seater">2 places</span><b>22 $</b></div>
-          <div><span data-en="5-seater, SUV">5 places, VUS</span><b>30 $</b></div>
-          <div><span data-en="7-seater, van, pickup">7 places, van, pickup</span><b>37 $</b></div>
+          <div><span data-en="2-seater">2 places</span><b>27 $</b></div>
+          <div><span data-en="5-seater, SUV">5 places, VUS</span><b>35 $</b></div>
+          <div><span data-en="7-seater, van, pickup">7 places, van, pickup</span><b>42 $</b></div>
         </div>
         <p class="hint" style="text-align:center;padding:8px 0 0" data-en="+ tax">+ taxes</p>
         <div class="f-corps">
@@ -734,9 +753,9 @@ footer a:hover{color:var(--acc-clair)}
              lavage extérieur à la main.</p>
         </div>
         <div class="f-prix">
-          <div><span data-en="2-seater">2 places</span><b>40 $</b></div>
-          <div><span data-en="5-seater, SUV">5 places, VUS</span><b>50 $</b></div>
-          <div><span data-en="7-seater, van, pickup">7 places, van, pickup</span><b>65 $</b></div>
+          <div><span data-en="2-seater">2 places</span><b>45 $</b></div>
+          <div><span data-en="5-seater, SUV">5 places, VUS</span><b>55 $</b></div>
+          <div><span data-en="7-seater, van, pickup">7 places, van, pickup</span><b>70 $</b></div>
         </div>
         <p class="hint" style="text-align:center;padding:8px 0 0" data-en="+ tax">+ taxes</p>
         <div class="f-corps">
@@ -761,9 +780,9 @@ footer a:hover{color:var(--acc-clair)}
              service complet qui va bien au-delà du simple lavage.</p>
         </div>
         <div class="f-prix">
-          <div><span data-en="2-seater">2 places</span><b>195 $</b></div>
-          <div><span data-en="5-seater, SUV">5 places, VUS</span><b>230 $</b></div>
-          <div><span data-en="7-seater, van, pickup">7 places, van, pickup</span><b>275 $</b></div>
+          <div><span data-en="2-seater">2 places</span><b>200 $</b></div>
+          <div><span data-en="5-seater, SUV">5 places, VUS</span><b>235 $</b></div>
+          <div><span data-en="7-seater, van, pickup">7 places, van, pickup</span><b>280 $</b></div>
         </div>
         <p class="hint" style="text-align:center;padding:8px 0 0" data-en="+ tax">+ taxes</p>
         <div class="f-corps">
@@ -782,6 +801,28 @@ footer a:hover{color:var(--acc-clair)}
     </div>
     <p class="hint" style="margin-top:22px" data-en="Heavily soiled vehicles or those with pet hair may require a surcharge — we tell you before we start, never after.">Les véhicules très sales ou avec poils d'animaux
        peuvent demander un supplément — on vous le dit avant de commencer, jamais après.</p>
+  </div>
+</section>
+
+<!-- ============ SERVICES ADDITIONNELS ============ -->
+<section id="supplements" class="bord-haut" aria-labelledby="t-supplements">
+  <div class="wrap">
+    <span class="eyebrow" data-en="Additional services">Services additionnels</span>
+    <h2 id="t-supplements" data-en="A little extra care">Un peu plus de soin</h2>
+    <p class="lead" data-en="Two extra touches — add them to any wash, or book them on their own, right from the booking form below.">Deux soins supplémentaires — ajoutez-les à n'importe quel lavage, ou réservez-les seuls, directement depuis le formulaire de réservation plus bas.</p>
+    <div class="grid g3">
+      <div class="card"><div class="card-pad">
+        <h3 data-en="Headlight restoration">Restauration des phares</h3>
+        <p data-en="Yellowed or hazy headlights dull your vehicle's look and reduce visibility at night. We polish them back to a clear finish and better lighting.">Des phares jaunis ou opaques ternissent l'apparence de votre véhicule et réduisent l'éclairage la nuit. On les polit pour retrouver une transparence claire et un meilleur éclairage.</p>
+        <p style="margin-top:16px"><b style="color:var(--acc-clair);font-size:1.3rem">90 $</b> <span class="hint" data-en="+ tax, per pair">+ taxes, la paire</span></p>
+      </div></div>
+      <div class="card"><div class="card-pad">
+        <h3 data-en="Hydrophobic treatment">Traitement hydrophobe</h3>
+        <p data-en="Applied to your windshield and windows, it makes rain bead up and roll off instead of spreading — better visibility in the rain, and less work for your wipers.">Appliqué sur le pare-brise et les vitres, il fait perler la pluie et glisser au lieu de s'étaler — meilleure visibilité sous la pluie, et moins de travail pour vos essuie-glaces.</p>
+        <p style="margin-top:16px"><b style="color:var(--acc-clair);font-size:1.3rem">55 $</b> <span class="hint" data-en="+ tax">+ taxes</span></p>
+      </div></div>
+    </div>
+    <a href="#reservation" class="btn btn-p" style="margin-top:26px" data-en="Book this service">Réserver ce service</a>
   </div>
 </section>
 
@@ -938,6 +979,7 @@ footer a:hover{color:var(--acc-clair)}
               <option value="Basic" data-en="Basic — exterior wash + interior cleaning">Basic — lavage ext. + nettoyage int.</option>
               <option value="Super" data-en="Super — exterior wash + interior detailing">Super — lavage ext. + détails int.</option>
               <option value="Deluxe" data-en="Deluxe — detailing, shampoo, engine, wax">Deluxe — détails, shampoing, moteur, cire</option>
+              <option value="Sans lavage" data-en="No wash — extra service only">Sans lavage — service additionnel seulement</option>
             </select>
           </div>
           <div class="field">
@@ -957,6 +999,21 @@ footer a:hover{color:var(--acc-clair)}
           <div class="field">
             <label for="f-heure"><span data-en="Time">Heure</span> <span class="req">*</span></label>
             <select id="f-heure" name="heure" required><option value="" data-en="— Pick a date first —">— Choisir une date d'abord —</option></select>
+          </div>
+          <div class="field full">
+            <label data-en="Additional options">Options supplémentaires</label>
+            <div class="extras-choix">
+              <label><input type="checkbox" id="ex-phares" value="phares"> <span data-en="Headlight restoration (90 $ + tax)">Restauration des phares (90 $ + taxes)</span></label>
+              <label><input type="checkbox" id="ex-hydrophobe" value="hydrophobe"> <span data-en="Hydrophobic treatment (55 $ + tax)">Traitement hydrophobe (55 $ + taxes)</span></label>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="f-promo" data-en="Promo code (optional)">Code promo (facultatif)</label>
+            <div class="promo-row">
+              <input id="f-promo" type="text" placeholder="Entrez votre code" autocomplete="off">
+              <button type="button" class="btn btn-g btn-sm" id="promo-appliquer" data-en="Apply">Appliquer</button>
+            </div>
+            <p class="promo-msg" id="promo-msg"></p>
           </div>
           <div class="field full">
             <label for="f-vehicule" data-en="Make and model">Marque et modèle</label>
@@ -1026,7 +1083,7 @@ footer a:hover{color:var(--acc-clair)}
       </details>
       <details>
         <summary data-en="How much does a wash cost?">Combien coûte un lavage ?</summary>
-        <p data-en="The Basic package starts at $22, Super at $40 and Deluxe at $195, plus tax. Price varies with vehicle size.">Le forfait Basic commence à 22 $, le Super à 40 $ et le Deluxe à 195 $, plus taxes.
+        <p data-en="The Basic package starts at $27, Super at $45 and Deluxe at $200, plus tax. Price varies with vehicle size.">Le forfait Basic commence à 27 $, le Super à 45 $ et le Deluxe à 200 $, plus taxes.
            Le prix varie selon la taille du véhicule.</p>
       </details>
       <details>
@@ -1114,9 +1171,9 @@ footer a:hover{color:var(--acc-clair)}
       </div>
       <div>
         <h4 data-en="Packages">Forfaits</h4>
-        <a href="#forfaits">Basic — dès 22 $ + tx</a>
-        <a href="#forfaits">Super — dès 40 $ + tx</a>
-        <a href="#forfaits">Deluxe — dès 195 $ + tx</a>
+        <a href="#forfaits">Basic — dès 27 $ + tx</a>
+        <a href="#forfaits">Super — dès 45 $ + tx</a>
+        <a href="#forfaits">Deluxe — dès 200 $ + tx</a>
       </div>
       <div>
         <h4 data-en="Information">Informations</h4>
@@ -1170,6 +1227,7 @@ footer a:hover{color:var(--acc-clair)}
         <button class="tab on" data-pane="p-resa">Réservations</button>
         <button class="tab" data-pane="p-heures">Heures d'ouverture</button>
         <button class="tab" data-pane="p-fermetures">Fermetures</button>
+        <button class="tab" data-pane="p-promos">Promotions</button>
         <button class="tab" data-pane="p-aide">Connexion des données</button>
       </div>
 
@@ -1242,6 +1300,51 @@ footer a:hover{color:var(--acc-clair)}
         </div>
       </div>
 
+      <div class="pane" id="p-promos">
+        <p class="hint" style="margin-bottom:20px">Créez des codes promo à partager (flyer, réseaux sociaux…). Le rabais
+           s'applique automatiquement au prix affiché sur le site, et chaque code ne peut être utilisé qu'une seule
+           fois par numéro de téléphone.</p>
+        <div class="champ-promo">
+          <div class="field">
+            <label for="pr-code">Code</label>
+            <input type="text" id="pr-code" placeholder="Entrez votre code promo ici" style="text-transform:uppercase">
+          </div>
+          <div class="field">
+            <label for="pr-type">Type de rabais</label>
+            <select id="pr-type">
+              <option value="pourcentage">% de rabais</option>
+              <option value="montant">Montant fixe ($)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="pr-valeur">Valeur</label>
+            <input type="number" id="pr-valeur" min="0" placeholder="20">
+          </div>
+          <div class="field">
+            <label for="pr-debut">Du (optionnel)</label>
+            <input type="date" id="pr-debut">
+          </div>
+          <div class="field">
+            <label for="pr-fin">Au (optionnel)</label>
+            <input type="date" id="pr-fin">
+          </div>
+        </div>
+        <div class="champ-promo-bas">
+          <label><input type="checkbox" id="pr-actif" checked> Code actif dès l'ajout</label>
+          <button class="btn btn-g" id="pr-ajouter" type="button">Ajouter le code</button>
+        </div>
+        <div id="promo-rows" style="margin-top:22px"></div>
+        <p class="saved" id="promo-saved"></p>
+        <div class="modal-act">
+          <button class="btn btn-p" id="promo-apply">Enregistrer</button>
+        </div>
+        <div class="notice">
+          <b>Comment ça marche :</b> Laissez « Du » et « Au » vides pour une promotion permanente, ou fixez des
+          dates pour une promotion périodique (ex. : un mois précis). Décochez un code pour le suspendre sans le
+          supprimer. Cliquez « Enregistrer » pour que le rabais s'applique tout de suite pour vos visiteurs.
+        </div>
+      </div>
+
       <div class="pane" id="p-aide">
         <h3 style="font-size:1.1rem;margin-bottom:12px">Où sont stockées les réservations ?</h3>
         <p class="hint" id="aide-mode" style="margin-bottom:18px"></p>
@@ -1304,10 +1407,25 @@ const INFO = {
    ============================================================ */
 const TAILLES = ["2 places", "5 places, VUS", "7 places, fourgonnette, camionnette"];
 const PRIX = {
-  "Basic":  {"2 places": 22,  "5 places, VUS": 30,  "7 places, fourgonnette, camionnette": 37},
-  "Super":  {"2 places": 40,  "5 places, VUS": 50,  "7 places, fourgonnette, camionnette": 65},
-  "Deluxe": {"2 places": 195, "5 places, VUS": 230, "7 places, fourgonnette, camionnette": 275}
+  "Basic":  {"2 places": 27,  "5 places, VUS": 35,  "7 places, fourgonnette, camionnette": 42},
+  "Super":  {"2 places": 45,  "5 places, VUS": 55,  "7 places, fourgonnette, camionnette": 70},
+  "Deluxe": {"2 places": 200, "5 places, VUS": 235, "7 places, fourgonnette, camionnette": 280}
 };
+
+/* Options supplémentaires, prix fixe (pas selon la taille du véhicule).
+   Modifiez librement — le formulaire, le total et les notifications se
+   mettent à jour tout seuls. (Pensez aussi à la section « Services
+   additionnels » plus haut dans le fichier si vous changez un prix.) */
+const EXTRAS = {
+  "phares":     {nom: "Restauration des phares", nomEn: "Headlight restoration", prix: 90},
+  "hydrophobe": {nom: "Traitement hydrophobe",    nomEn: "Hydrophobic treatment", prix: 55}
+};
+
+/* Codes promo — gérés depuis l'espace admin, onglet « Promotions ». Laissez
+   vide ici : la vraie liste est chargée depuis la base de données au
+   chargement du site. Forme de chaque code une fois chargé :
+   {code, type:"pourcentage"|"montant", valeur, debut, fin, actif} */
+const PROMOS = [];
 
 /* ============================================================
    3. NOTIFICATION SUR VOTRE TÉLÉPHONE (ntfy)
@@ -1392,6 +1510,14 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp
 const adresseComplete = () => INFO.rue + ", " + INFO.ville + ", " + INFO.province + (INFO.postal ? " " + INFO.postal : "");
 const prixDe = (service, taille) => (PRIX[service] && PRIX[service][taille]) || 0;
 
+/* ---------- options supplémentaires (phares, hydrophobe...) ---------- */
+const extrasChoisis = () => Object.keys(EXTRAS).filter(k => { const c = document.getElementById("ex-" + k); return c && c.checked; });
+const extrasTotal = cles => cles.reduce((s, k) => s + (EXTRAS[k] ? EXTRAS[k].prix : 0), 0);
+/* les valeurs enregistrées restent en français (cohérence de la base) ;
+   on ne traduit que l'affichage — même principe que tailleAff/TAILLE_EN */
+const extrasNomsFr  = cles => cles.map(k => EXTRAS[k] ? EXTRAS[k].nom : k).join(", ");
+const extrasNomsAff = cles => cles.map(k => EXTRAS[k] ? L(EXTRAS[k].nom, EXTRAS[k].nomEn) : k).join(", ");
+
 /* ---------- fermetures exceptionnelles ---------- */
 /* "YYYY-MM-DD" en heure locale du visiteur — jamais via toISOString(),
    qui bascule au fuseau UTC et peut décaler la date en soirée. */
@@ -1404,6 +1530,31 @@ const fermetureActive = v => FERMETURES.find(f => v >= f.debut && v <= f.fin) ||
 const TAILLE_EN = {"2 places":"2-seater","5 places, VUS":"5-seater, SUV",
                    "7 places, fourgonnette, camionnette":"7-seater, van, pickup truck"};
 const tailleAff = t => L(t, TAILLE_EN[t] || t);
+
+/* ---------- codes promo ---------- */
+/* Validation instantanée, côté client : code trouvé, actif, et dans sa
+   période le cas échéant. La vérification « un seul usage par client » se
+   fait séparément, à l'envoi du formulaire (voir SB.verifierPromo). */
+function promoValide(code){
+  const c = (code || "").trim().toUpperCase();
+  if (!c) return null;
+  const auj = dateStrLocale(new Date());
+  return PROMOS.find(p => (p.code || "").toUpperCase() === c && p.actif !== false &&
+    (!p.debut || auj >= p.debut) && (!p.fin || auj <= p.fin)) || null;
+}
+function calculRabais(montant, promo){
+  if (!promo || !montant) return 0;
+  if (promo.type === "montant") return Math.min(Number(promo.valeur) || 0, montant);
+  return Math.round(montant * ((Number(promo.valeur) || 0) / 100));
+}
+/* Remplace le contenu de PROMOS et rafraîchit le prix affiché si un code
+   était déjà saisi (ex. : la vraie liste arrive après le premier affichage). */
+function appliquerPromos(nouveau){
+  if (!Array.isArray(nouveau)) return;
+  PROMOS.length = 0; PROMOS.push(...nouveau);
+  if (promoAppliquee){ promoAppliquee = promoValide(promoAppliquee.code); }
+  majTotal();
+}
 
 /* ---------- coordonnées ---------- */
 $("#year").textContent = new Date().getFullYear();
@@ -1596,15 +1747,58 @@ function creneaux(){
 dateInput.addEventListener("change", creneaux);
 
 /* ---------- prix estimé en direct ---------- */
+let promoAppliquee = null;
 function majTotal(){
-  const p = prixDe($("#f-service").value, $("#f-taille").value);
-  if (p){ $("#total-val").textContent = p + " $ + taxes"; $("#total").classList.add("show"); }
-  else { $("#total").classList.remove("show"); }
+  const service = $("#f-service").value;
+  const p = prixDe(service, $("#f-taille").value);
+  const sousTotal = p + extrasTotal(extrasChoisis());
+  const rabais = calculRabais(sousTotal, promoAppliquee);
+  const total = sousTotal - rabais;
+  if (service && sousTotal > 0){
+    $("#total-val").innerHTML = (rabais
+      ? '<s style="opacity:.5;font-weight:600;font-size:.7em;margin-right:7px">' + sousTotal + ' $</s>'
+      : '') + total + " $ + taxes";
+    $("#total").classList.add("show");
+  } else { $("#total").classList.remove("show"); }
 }
 $("#f-service").addEventListener("change", majTotal);
 $("#f-taille").addEventListener("change", majTotal);
+Object.keys(EXTRAS).forEach(k => {
+  const c = document.getElementById("ex-" + k);
+  if (c) c.addEventListener("change", majTotal);
+});
 document.querySelectorAll("[data-pick]").forEach(b => {
   b.addEventListener("click", () => { $("#f-service").value = b.dataset.pick; majTotal(); });
+});
+
+/* ---------- application d'un code promo dans le formulaire ---------- */
+$("#promo-appliquer").addEventListener("click", () => {
+  const code = $("#f-promo").value.trim();
+  const m = $("#promo-msg");
+  if (!code){
+    promoAppliquee = null; m.className = "promo-msg"; majTotal(); return;
+  }
+  const promo = promoValide(code);
+  if (!promo){
+    promoAppliquee = null;
+    m.textContent = L("Code invalide ou expiré.", "Invalid or expired code.");
+    m.className = "promo-msg show err";
+    majTotal(); return;
+  }
+  promoAppliquee = promo;
+  const desc = promo.type === "montant" ? (promo.valeur + " $") : (promo.valeur + " %");
+  m.textContent = L("Code appliqué — " + desc + " de rabais.", "Code applied — " + desc + " off.");
+  m.className = "promo-msg show ok";
+  majTotal();
+});
+$("#f-promo").addEventListener("input", () => {
+  if (promoAppliquee){ promoAppliquee = null; $("#promo-msg").className = "promo-msg"; majTotal(); }
+});
+/* Sans ceci, appuyer sur Entrée dans ce champ soumettrait toute la
+   réservation (c'est le seul bouton "submit" du formulaire) au lieu
+   d'appliquer le code — on intercepte pour appliquer à la place. */
+$("#f-promo").addEventListener("keydown", e => {
+  if (e.key === "Enter"){ e.preventDefault(); $("#promo-appliquer").click(); }
 });
 
 /* ============================================================
@@ -1716,6 +1910,43 @@ const SB = {
     });
     if (res.status === 401 || res.status === 403) throw new Error("Session expirée. Reconnectez-vous.");
     if (!res.ok) throw new Error("Enregistrement des fermetures impossible (" + res.status + ").");
+  },
+  /* Codes promo, même table "parametres", clé "promos". Même principe :
+     lecture publique, écriture réservée à l'admin. */
+  async lirePromos(){
+    const res = await fetch(this.base() + "/rest/v1/parametres?select=valeur&cle=eq.promos", {
+      headers: this.entetes()
+    });
+    if (!res.ok) return null;
+    const j = await res.json().catch(() => []);
+    return (j && j[0] && j[0].valeur) || null;
+  },
+  async majPromos(valeur, token){
+    const res = await fetch(this.base() + "/rest/v1/parametres?cle=eq.promos", {
+      method:"PATCH",
+      headers: this.entetes({ "Authorization":"Bearer " + token, "Prefer":"return=minimal" }),
+      body: JSON.stringify({ valeur: valeur })
+    });
+    if (res.status === 401 || res.status === 403) throw new Error("Session expirée. Reconnectez-vous.");
+    if (!res.ok) throw new Error("Enregistrement des promotions impossible (" + res.status + ").");
+  },
+  /* Une seule utilisation par code et par numéro de téléphone : on tente
+     d'INSÉRER la paire (code, tel) dans une table protégée par une
+     contrainte unique. Un 409 veut dire « déjà utilisé ». Toute autre
+     situation — succès, ou même une panne réseau — ne doit jamais bloquer
+     la réservation : on considère alors le code disponible (repli ouvert,
+     comme partout ailleurs dans le site). */
+  async verifierPromo(code, tel){
+    try {
+      const h = this.entetes({ "Prefer":"return=minimal" });
+      if (!this.cleModerne()) h["Authorization"] = "Bearer " + BACKEND.supabase.anonKey;
+      const res = await fetch(this.base() + "/rest/v1/promos_utilisations", {
+        method:"POST", headers: h,
+        body: JSON.stringify({ code: (code || "").toUpperCase(), tel: tel })
+      });
+      if (res.status === 409) return false;
+      return true;
+    } catch(e){ return true; }
   }
 };
 
@@ -1783,11 +2014,41 @@ $("#form").addEventListener("submit", async e => {
   if (d.tel.replace(/\D/g,"").length < 10){
     eg.textContent = "Le numéro de téléphone semble incomplet."; eg.classList.add("show"); return;
   }
+  const clesExtras = extrasChoisis();
+  if (d.service === "Sans lavage" && !clesExtras.length){
+    eg.textContent = L("Sélectionnez au moins une option supplémentaire.","Select at least one add-on service.");
+    eg.classList.add("show"); return;
+  }
   eg.classList.remove("show");
-  d.prix = prixDe(d.service, d.taille);
+  const sousTotal = prixDe(d.service, d.taille) + extrasTotal(clesExtras);
+  d.extras = extrasNomsFr(clesExtras);   /* toujours en français, comme les autres champs enregistrés */
 
   const bouton = $("#btn-submit");
   bouton.disabled = true; bouton.textContent = "Envoi en cours…";
+
+  let rabais = 0;
+  if (promoAppliquee){
+    /* En mode Supabase, on vérifie ET on consomme le code d'un seul coup :
+       une tentative d'insertion (code, tel) protégée par une contrainte
+       unique en base. Un refus (409) = déjà utilisé par ce numéro : on
+       bloque l'envoi, comme les autres validations ci-dessus. Toute autre
+       situation (succès, ou même une panne réseau) laisse passer le rabais
+       — jamais bloquer une réservation à cause d'un souci secondaire. */
+    const dispo = Resa.mode() === "supabase" ? await SB.verifierPromo(promoAppliquee.code, d.tel) : true;
+    if (!dispo){
+      bouton.disabled = false; bouton.textContent = "Confirmer ma demande";
+      const m = $("#promo-msg");
+      m.textContent = L("Ce code a déjà été utilisé avec ce numéro de téléphone.",
+                         "This code has already been used with this phone number.");
+      m.className = "promo-msg show err";
+      promoAppliquee = null; majTotal();
+      return;
+    }
+    rabais = calculRabais(sousTotal, promoAppliquee);
+    d.code_promo = promoAppliquee.code;
+  }
+  d.prix = sousTotal - rabais;
+
   let res = {ok:false, distant:false};
   try { res = await Resa.creer(d); } catch(err){ res = {ok:false}; }
   bouton.disabled = false; bouton.textContent = "Confirmer ma demande";
@@ -1798,6 +2059,8 @@ $("#form").addEventListener("submit", async e => {
   $("#recap-dl").innerHTML = [
     [L("Forfait","Package"), d.service],
     [L("Véhicule","Vehicle"), tailleAff(d.taille) + (d.vehicule ? " · " + d.vehicule : "")],
+    clesExtras.length ? [L("Options","Add-ons"), extrasNomsAff(clesExtras)] : null,
+    d.code_promo ? [L("Code promo","Promo code"), d.code_promo + " (–" + rabais + " $)"] : null,
     [L("Prix","Price"), d.prix + L(" $ + taxes"," $ + tax")],
     [L("Date","Date"), dateLisible], [L("Heure","Time"), fmt(d.heure)],
     [L("Nom","Name"), d.nom], [L("Téléphone","Phone"), d.tel],
@@ -1807,6 +2070,8 @@ $("#form").addEventListener("submit", async e => {
   const msg =
     "NOUVELLE RESERVATION - " + INFO.nom + "\n" +
     "Forfait : " + d.service + " (" + d.prix + " $ + taxes)\n" +
+    (d.extras ? "Options : " + d.extras + "\n" : "") +
+    (d.code_promo ? "Code promo : " + d.code_promo + " (-" + rabais + " $)\n" : "") +
     "Vehicule : " + d.taille + (d.vehicule ? " - " + d.vehicule : "") + "\n" +
     "Date : " + dateLisible + " a " + fmt(d.heure) + "\n" +
     "Client : " + d.nom + "\nTelephone : " + d.tel +
@@ -1831,6 +2096,8 @@ $("#form").addEventListener("submit", async e => {
         "🧽 " + d.service + "  ·  " + d.prix + " $ + taxes",
         "🚗 " + d.taille + (d.vehicule ? "  ·  " + d.vehicule : "")
       ];
+      if (d.extras) lignes.push("✨ " + d.extras);
+      if (d.code_promo) lignes.push("🏷️ " + d.code_promo + " (–" + rabais + " $)");
       if (d.notes) lignes.push("📝 " + d.notes);
       const msg = lignes.join("\n");
       /* On touche la notification : elle ouvre directement l'espace admin,
@@ -1946,8 +2213,9 @@ $("#adm-go").addEventListener("click", async () => {
     if (MODE === "supabase"){
       await SB.lireHoraires().then(appliquerHoraires).catch(() => {});
       await SB.lireFermetures().then(appliquerFermetures).catch(() => {});
+      await SB.lirePromos().then(appliquerPromos).catch(() => {});
     }
-    rendreAdminHeures(); rendreAdminFermetures(); majAide(); rendreTable();
+    rendreAdminHeures(); rendreAdminFermetures(); rendreAdminPromos(); majAide(); rendreTable();
   } catch(e){
     err.textContent = e.message || "Connexion impossible."; err.classList.add("show");
   }
@@ -2012,7 +2280,8 @@ function rendreTable(){
       '<td><b>' + esc(dl) + '</b><br><span style="color:var(--gris-2)">' + esc(fmt(r.heure||"")) + '</span></td>' +
       '<td>' + esc(r.nom) + '</td>' +
       '<td><a href="tel:' + esc((r.tel||"").replace(/\s/g,"")) + '" style="color:var(--acc-clair)">' + esc(r.tel) + '</a></td>' +
-      '<td>' + esc(r.service) + '</td>' +
+      '<td>' + esc(r.service) + (r.extras ? '<br><span style="color:var(--gris-2);font-size:.8rem">✨ ' + esc(r.extras) + '</span>' : '') +
+        (r.code_promo ? '<br><span style="color:var(--gris-2);font-size:.8rem">🏷️ ' + esc(r.code_promo) + '</span>' : '') + '</td>' +
       '<td>' + esc(tailleAff(r.taille) || "—") + '<br><span style="color:var(--gris-2);font-size:.8rem">' + esc(r.vehicule||"") + '</span></td>' +
       '<td><b style="color:var(--acc-clair)">' + prixResa(r) + ' $</b></td>' +
       '<td style="max-width:180px">' + esc(r.notes || "—") + '</td>' +
@@ -2042,10 +2311,10 @@ $("#adm-refresh").addEventListener("click", async () => {
 });
 $("#adm-csv").addEventListener("click", () => {
   const rows = filtrees();
-  const entetes = ["ID","Date","Heure","Nom","Telephone","Forfait","Taille","Prix","Vehicule","Notes","Statut","Cree"];
+  const entetes = ["ID","Date","Heure","Nom","Telephone","Forfait","Options","Code promo","Taille","Prix","Vehicule","Notes","Statut","Cree"];
   const q = v => '"' + String(v == null ? "" : v).replace(/"/g,'""') + '"';
   const csv = "﻿" + [entetes.join(";")].concat(rows.map(r => [
-    r.id, r.date, r.heure, r.nom, r.tel, r.service, r.taille, prixResa(r),
+    r.id, r.date, r.heure, r.nom, r.tel, r.service, r.extras || "", r.code_promo || "", r.taille, prixResa(r),
     r.vehicule, r.notes, r.statut, r.cree
   ].map(q).join(";"))).join("\n");
   const url = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"}));
@@ -2166,6 +2435,82 @@ $("#ferm-apply").addEventListener("click", async () => {
   }
 });
 
+/* ---------- admin : codes promo ---------- */
+let travailPromos = [];
+function rendreAdminPromos(){
+  travailPromos = PROMOS.map(p => ({...p}));
+  dessinerPromos();
+}
+function dessinerPromos(){
+  const zone = $("#promo-rows");
+  if (!travailPromos.length){
+    zone.innerHTML = '<p class="ferm-vide">Aucun code promo créé.</p>';
+    return;
+  }
+  zone.innerHTML = travailPromos.map((p, i) => {
+    const valTxt = p.type === "montant" ? (p.valeur + " $ de rabais") : (p.valeur + " % de rabais");
+    const periode = (p.debut || p.fin)
+      ? (p.debut ? fmtDateLongue(p.debut) : "…") + " → " + (p.fin ? fmtDateLongue(p.fin) : "…")
+      : "Permanent";
+    return '<div class="ferm-row">' +
+      '<div class="txt"><b>' + esc(p.code) + '</b> — ' + esc(valTxt) +
+      (p.actif === false ? ' <span class="pill inactif">Inactif</span>' : '') +
+      '<span>' + esc(periode) + '</span></div>' +
+      '<button type="button" data-i="' + i + '" aria-label="Retirer ce code">×</button></div>';
+  }).join("");
+}
+$("#promo-rows").addEventListener("click", e => {
+  const b = e.target.closest("button[data-i]"); if (!b) return;
+  travailPromos.splice(Number(b.dataset.i), 1);
+  dessinerPromos();
+});
+$("#pr-ajouter").addEventListener("click", () => {
+  const code = $("#pr-code").value.trim().toUpperCase();
+  const type = $("#pr-type").value;
+  const valeur = Number($("#pr-valeur").value);
+  const debut = $("#pr-debut").value || null;
+  const fin = $("#pr-fin").value || null;
+  const actif = $("#pr-actif").checked;
+  const msg = $("#promo-saved");
+  msg.classList.remove("show", "err");
+  if (!code){
+    msg.textContent = "Entrez un code."; msg.classList.add("show", "err"); return;
+  }
+  if (!valeur || valeur <= 0){
+    msg.textContent = "Entrez une valeur de rabais supérieure à zéro."; msg.classList.add("show", "err"); return;
+  }
+  if (debut && fin && fin < debut){
+    msg.textContent = "La date de fin doit être après la date de début."; msg.classList.add("show", "err"); return;
+  }
+  if (travailPromos.some(p => p.code.toUpperCase() === code)){
+    msg.textContent = "Ce code existe déjà."; msg.classList.add("show", "err"); return;
+  }
+  travailPromos.push({code, type, valeur, debut, fin, actif});
+  dessinerPromos();
+  $("#pr-code").value = ""; $("#pr-valeur").value = "";
+  $("#pr-debut").value = ""; $("#pr-fin").value = ""; $("#pr-actif").checked = true;
+});
+$("#promo-apply").addEventListener("click", async () => {
+  appliquerPromos(travailPromos);   /* l'affichage change tout de suite, ici même */
+  const saved = $("#promo-saved"), btn = $("#promo-apply");
+  saved.classList.remove("show", "err");
+  if (MODE === "supabase"){
+    btn.disabled = true; btn.textContent = "Enregistrement…";
+    try {
+      await SB.majPromos(PROMOS, jeton);
+      saved.textContent = "✓ Promotions enregistrées — visibles tout de suite pour tous vos visiteurs.";
+      saved.classList.add("show");
+    } catch(e){
+      saved.textContent = "⚠ Affiché ici, mais pas enregistré pour vos visiteurs : " + e.message;
+      saved.classList.add("show", "err");
+    }
+    btn.disabled = false; btn.textContent = "Enregistrer";
+  } else {
+    saved.textContent = "✓ Promotions appliquées sur cet appareil (mode local — connectez Supabase pour que ce soit permanent).";
+    saved.classList.add("show");
+  }
+});
+
 /* ---------- données structurées (SEO) — tenues à jour avec les heures réelles ---------- */
 function ldJsonObjet(){
   const groupes = {};
@@ -2230,13 +2575,14 @@ majLdJson();
 rendreFermBandeau();
 setInterval(rendreStatut, 60000);
 
-/* Heures et fermetures : celles écrites ci-dessus servent tant que la base
-   n'a pas répondu (pas d'écran vide le temps du chargement), puis on
-   applique la vraie valeur enregistrée par l'admin — la même pour tous les
-   visiteurs. */
+/* Heures, fermetures et promotions : celles écrites ci-dessus servent tant
+   que la base n'a pas répondu (pas d'écran vide le temps du chargement),
+   puis on applique la vraie valeur enregistrée par l'admin — la même pour
+   tous les visiteurs. */
 if (MODE === "supabase"){
   SB.lireHoraires().then(appliquerHoraires).catch(() => {});
   SB.lireFermetures().then(appliquerFermetures).catch(() => {});
+  SB.lirePromos().then(appliquerPromos).catch(() => {});
 }
 });
 </script>
