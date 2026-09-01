@@ -4,6 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<!-- ===================== GOOGLE ANALYTICS (GA4) =====================
+     Mesure des visites + suivi des réservations envoyées et des clics
+     sur un numéro de téléphone (voir plus bas dans le <script>, événements
+     "reservation_envoyee" et "clic_telephone"). Ces deux événements peuvent
+     ensuite être importés comme conversions dans Google Ads.
+     ==================================================================== -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MGGL9Q710E"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MGGL9Q710E');
+</script>
+
 <!-- ===================== RÉFÉRENCEMENT (SEO) =====================
      Cible : « lave-auto centre-ville Montréal », secteur avenue du Parc.
      ⚠️ À COMPLÉTER : code postal (bloc INFO dans le <script>) et domaine réel.
@@ -73,6 +87,7 @@
   },
   "geo": {"@type": "GeoCoordinates", "latitude": 45.5107, "longitude": -73.5745},
   "hasMap": "https://www.google.com/maps/search/?api=1&query=3535+avenue+du+Parc+Montreal",
+  "aggregateRating": {"@type": "AggregateRating", "ratingValue": "5.0", "reviewCount": "8", "bestRating": "5"},
   "areaServed": [
     {"@type": "Place", "name": "Centre-ville de Montréal"},
     {"@type": "Place", "name": "Ville-Marie, Montréal"},
@@ -307,6 +322,23 @@ ol.pas li::before{content:counter(pas);position:absolute;left:0;top:-1px;
 .card:hover{transform:translateY(-4px);border-color:var(--ligne-f)}
 .card-pad{padding:26px;display:flex;flex-direction:column;flex:1}
 
+/* AVIS CLIENTS */
+.avis-tete{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.avis-score{display:flex;align-items:center;gap:8px}
+.avis-score b{font-size:1.6rem;color:var(--acc-clair);font-weight:800}
+.avis-etoiles{display:inline-flex;gap:2px;color:var(--acc)}
+.avis-etoiles svg{flex:none}
+.avis-lien{color:var(--gris-2);font-size:.85rem;text-decoration:underline;text-underline-offset:3px}
+.avis-lien:hover{color:var(--acc-clair)}
+.avis-carte .avis-etoiles{margin-bottom:14px}
+.avis-carte p{color:var(--txt);font-size:.95rem;flex:1}
+.avis-auteur{margin-top:18px;display:flex;align-items:center;gap:12px}
+.avis-ava{width:38px;height:38px;border-radius:50%;background:var(--acc-voile);
+  border:1px solid rgba(244,118,27,.35);display:grid;place-items:center;color:var(--acc-clair);
+  font-weight:800;font-size:.85rem;flex:none}
+.avis-nom{font-size:.88rem;font-weight:700;color:var(--txt)}
+.avis-src{display:block;font-size:.76rem;color:var(--gris-2)}
+
 /* ÉTAPES — ligne de progression */
 .flux{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px}
 .flux-e{position:relative;padding-right:26px}
@@ -514,13 +546,13 @@ footer a:hover{color:var(--acc-clair)}
   .arrivee-txt{padding:30px 24px}
 }
 @media(max-width:760px){
-  .topbar .wrap{font-size:.75rem;gap:10px;min-height:34px}
+  .topbar .wrap{font-size:.75rem;gap:10px;min-height:34px;padding-top:4px;padding-bottom:4px}
   .tb-detail{display:none}
   .tb-court{display:inline}
   .tb-tel-txt{display:none}
   .tb-tel{padding:5px 9px}
   .tb-tel-2{display:none}          /* écran étroit : une seule icône d'appel */
-  [id]{scroll-margin-top:112px}
+  [id]{scroll-margin-top:104px}
 }
 /* deux colonnes : le trait ne doit pas dépasser en fin de rangée */
 @media(max-width:920px){
@@ -545,7 +577,8 @@ footer a:hover{color:var(--acc-clair)}
 @media(max-width:820px){
   .nav-links{display:none}
   section{padding:64px 0}
-  .hero{padding:80px 0 76px}
+  .hero{padding:36px 0 52px}
+  .statut{margin-bottom:14px}
   .trust div{padding-right:20px;margin-right:20px}
   .ct div{border-right:0;border-bottom:1px solid var(--ligne);padding:24px 0}
   .arow{grid-template-columns:1fr 1fr;row-gap:7px}
@@ -590,7 +623,7 @@ footer a:hover{color:var(--acc-clair)}
   .lang{margin-left:auto}         /* colle EN + menu contre le bord droit */
   .barre-bas{display:flex}
   body{padding-bottom:76px}       /* la barre ne masque pas le pied de page */
-  nav{height:64px;gap:14px}
+  nav{height:56px;gap:14px}
   /* iOS zoome sur tout champ sous 16px */
   input,select,textarea{font-size:16px;padding:14px 15px}
   .filtres select,.filtres input{font-size:16px}
@@ -862,6 +895,98 @@ footer a:hover{color:var(--acc-clair)}
            Dollarama, au cinéma, au Gym La Cité et à plusieurs bars et restaurants — profitez-en
            pendant qu'on s'occupe de votre voiture. En plus, dès que vous entrez dans le garage
            pour le lavage, vous profitez de 2 heures de stationnement gratuites.</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AVIS CLIENTS (PREUVE SOCIALE) ============ -->
+<section id="avis" class="bord-haut" aria-labelledby="t-avis">
+  <div class="wrap">
+    <span class="eyebrow" data-en="Customer reviews">Avis clients</span>
+    <h2 id="t-avis" data-en="What our customers say">Ce que disent nos clients</h2>
+    <div class="avis-tete">
+      <div class="avis-score">
+        <b>5,0</b>
+        <span class="avis-etoiles" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </span>
+      </div>
+      <a class="avis-lien" href="https://www.google.com/maps/place/Lave+Auto+du+Parc/@45.5100551,-73.5741159,17z" target="_blank" rel="noopener" data-en="8 reviews on Google — see them all">8 avis sur Google — les voir tous</a>
+    </div>
+    <p class="lead" data-en="A sample of real reviews left by our customers on Google.">Un aperçu d'avis réels laissés par nos clients sur Google.</p>
+    <div class="grid g4">
+      <div class="card avis-carte"><div class="card-pad">
+        <span class="avis-etoiles" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </span>
+        <p data-en="“Great service! The wash is fast and efficient, and the result is spotless. The car comes out looking like new, inside and out. Friendly, professional staff — I recommend it without hesitation!”">« Très bon service ! Le lavage est rapide, efficace et le résultat est impeccable. La voiture ressort vraiment comme neuve, autant à l'extérieur qu'à l'intérieur. Personnel accueillant et professionnel. »</p>
+        <div class="avis-auteur">
+          <span class="avis-ava" aria-hidden="true">O</span>
+          <span>
+            <span class="avis-nom">OvErTriX98</span>
+            <span class="avis-src" data-en="Google review">Avis Google</span>
+          </span>
+        </div>
+      </div></div>
+      <div class="card avis-carte"><div class="card-pad">
+        <span class="avis-etoiles" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </span>
+        <p data-en="“Great service! Hakim is genuinely friendly, thorough and professional — you can tell he takes real care in his work and wants his customers happy. The car comes out spotless. I highly recommend Lave Auto du Parc!”">« Très bon service ! Hakim est vraiment sympathique, sérieux et professionnel. On voit qu'il fait son travail avec beaucoup de soin et qu'il tient à satisfaire ses clients. La voiture ressort nickel. Je recommande vivement le Lave Auto du Parc ! »</p>
+        <div class="avis-auteur">
+          <span class="avis-ava" aria-hidden="true">A</span>
+          <span>
+            <span class="avis-nom">Amine Nabil</span>
+            <span class="avis-src" data-en="Google review">Avis Google</span>
+          </span>
+        </div>
+      </div></div>
+      <div class="card avis-carte"><div class="card-pad">
+        <span class="avis-etoiles" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </span>
+        <p data-en="“Great experience! The car wash is on level P2 of the parking garage, easy to find. Nice bonus: they gave me a 2-hour parking ticket while my car was washed, so no stress about the meter. Fast service and a spotless car — recommended!”">« Super expérience ! Le lave-auto se trouve au P2 du stationnement, facile à trouver. Petit bonus appréciable : ils m'ont donné un ticket de stationnement de 2h pendant le lavage, ça évite le stress du parcomètre. Service rapide et auto impeccable, je recommande ! »</p>
+        <div class="avis-auteur">
+          <span class="avis-ava" aria-hidden="true">Z</span>
+          <span>
+            <span class="avis-nom">Zakaria Ali</span>
+            <span class="avis-src" data-en="Google review">Avis Google</span>
+          </span>
+        </div>
+      </div></div>
+      <div class="card avis-carte"><div class="card-pad">
+        <span class="avis-etoiles" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </span>
+        <p data-en="“Professional, thorough wash — I'll definitely be back!”">« Lavage professionnel et propre, je reviendrais certainement ! »</p>
+        <div class="avis-auteur">
+          <span class="avis-ava" aria-hidden="true">S</span>
+          <span>
+            <span class="avis-nom">Salim B. T.</span>
+            <span class="avis-src" data-en="Google review">Avis Google</span>
+          </span>
+        </div>
       </div></div>
     </div>
   </div>
@@ -2117,6 +2242,17 @@ $("#form").addEventListener("submit", async e => {
   }
 
   if (res.distant){
+    /* Réservation réellement enregistrée : c'est LA conversion qui compte
+       pour Google Ads. On ne suit jamais le chemin de secours (SMS/courriel)
+       comme une conversion : rien ne garantit qu'il a été envoyé. */
+    if (typeof gtag === "function"){
+      try {
+        gtag("event", "reservation_envoyee", {
+          currency: "CAD", value: d.prix,
+          forfait: d.service, taille: d.taille
+        });
+      } catch(e){ /* sans effet sur la réservation */ }
+    }
     /* La réservation est enregistrée : le client n'a RIEN d'autre à faire.
        C'est la base de données qui nous avertit automatiquement. */
     $("#recap").classList.add("ok");
@@ -2156,6 +2292,19 @@ $("#send-again").addEventListener("click", () => {
   $("#recap").classList.remove("show");
   $("#form").reset(); $("#form").style.display = "";
   majTotal(); creneaux();
+});
+
+/* Suivi Google Analytics des clics sur un numéro de téléphone (topbar,
+   pied de page, bouton d'appel du bas d'écran, etc.) — un seul écouteur
+   posé sur toute la page plutôt qu'un par bouton, pour couvrir aussi les
+   liens ajoutés dynamiquement. On exclut l'espace administrateur : ces
+   clics-là ne représentent pas un client potentiel. */
+document.addEventListener("click", e => {
+  if (typeof gtag !== "function") return;
+  const lien = e.target.closest('a[href^="tel:"]');
+  if (!lien || lien.closest("#admin")) return;
+  try { gtag("event", "clic_telephone", { numero: lien.getAttribute("href").replace("tel:", "") }); }
+  catch(err){ /* sans effet sur la navigation */ }
 });
 
 /* ============================================================
