@@ -641,6 +641,30 @@ footer a:hover{color:var(--acc-clair)}
 </head>
 <body>
 
+<!-- ============ AVIS TEMPORAIRE : FERMETURE AV. DU PARC ============
+     ⚠️ À retirer (ou ajuster les dates) une fois les travaux terminés.
+     La fenêtre se cache déjà toute seule après le 4 octobre 2026 — voir
+     la constante FERMETURE_ROUTE_FIN dans le <script> plus bas — mais
+     vous pouvez aussi supprimer ce bloc et son script à ce moment-là. -->
+<div class="modal" id="avis-route" role="dialog" aria-modal="true" aria-labelledby="ar-titre">
+  <div class="modal-in etroit">
+    <div class="modal-head">
+      <h3 id="ar-titre" data-en="Temporary closure of Avenue du Parc">Fermeture temporaire de l'avenue du Parc</h3>
+      <button class="x" id="ar-fermer" aria-label="Fermer">&times;</button>
+    </div>
+    <div class="notice alerte" style="margin-top:16px">
+      <p data-en="Due to construction, Avenue du Parc is completely closed to traffic between Avenue des Pins and Avenue du Mont-Royal, from September 4 to October 4, 2026.">En raison de travaux, l'avenue du Parc est complètement fermée à la circulation
+         entre l'avenue des Pins et l'avenue du Mont-Royal, du 4 septembre au 4 octobre 2026.</p>
+      <p style="margin-top:10px" data-en="During this period, our parking garage remains accessible either from Avenue du Parc or from 3542 Jeanne-Mance Street.">Pendant cette période, l'entrée du stationnement demeure accessible autant par
+         l'<b>avenue du Parc</b> que par le <b>3542, rue Jeanne-Mance</b>.</p>
+    </div>
+    <div class="modal-act">
+      <a class="btn btn-g btn-sm" href="https://www.google.com/maps/search/?api=1&query=3542+rue+Jeanne-Mance+Montreal" target="_blank" rel="noopener" data-en="Directions from Jeanne-Mance">Itinéraire depuis Jeanne-Mance</a>
+      <button class="btn btn-p btn-sm" id="ar-compris" data-en="Got it">J'ai compris</button>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="topbar">
     <div class="wrap">
@@ -1616,6 +1640,31 @@ const FERMETURES = [];
 const JOURS = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche"];
 const JOURS_EN = {lundi:"Monday",mardi:"Tuesday",mercredi:"Wednesday",jeudi:"Thursday",vendredi:"Friday",samedi:"Saturday",dimanche:"Sunday"};
 const $ = s => document.querySelector(s);
+
+/* ---------- Avis temporaire : fermeture de l'avenue du Parc ---------- */
+/* S'affiche automatiquement jusqu'à cette date incluse, puis plus jamais
+   (même si vous oubliez de retirer le bloc HTML) : */
+const FERMETURE_ROUTE_FIN = "2026-10-04";
+(function(){
+  const modal = $("#avis-route");
+  if (!modal) return;
+  const cacherDefinitivement = new Date() > new Date(FERMETURE_ROUTE_FIN + "T23:59:59");
+  if (cacherDefinitivement){ modal.remove(); return; }
+  const CLE = "lap-avis-route-vu";
+  const aujourdhui = new Date().toISOString().slice(0,10);
+  if (localStorage.getItem(CLE) !== aujourdhui){
+    modal.classList.add("show");
+  }
+  const fermer = () => {
+    modal.classList.remove("show");
+    try { localStorage.setItem(CLE, aujourdhui); } catch(e){ /* sans effet si indisponible */ }
+  };
+  $("#ar-fermer").addEventListener("click", fermer);
+  $("#ar-compris").addEventListener("click", fermer);
+  modal.addEventListener("click", e => { if (e.target.id === "avis-route") fermer(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && modal.classList.contains("show")) fermer(); });
+})();
+
 const min = t => { const [h,m] = t.split(":").map(Number); return h*60+m; };
 const fmt = t => {
   if (typeof enAnglais !== "undefined" && enAnglais){
