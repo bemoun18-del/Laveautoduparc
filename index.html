@@ -843,17 +843,19 @@ footer a:hover{color:var(--acc-clair)}
   <div class="wrap">
     <span class="eyebrow" data-en="Additional services">Services additionnels</span>
     <h2 id="t-supplements" data-en="A little extra care">Un peu plus de soin</h2>
-    <p class="lead" data-en="Two extra touches — add them to any wash, or book them on their own, right from the booking form below.">Deux soins supplémentaires — ajoutez-les à n'importe quel lavage, ou réservez-les seuls, directement depuis le formulaire de réservation plus bas.</p>
+    <p class="lead" data-en="Two extra touches — add them to any wash, or book them on their own, right from the booking form below. Both require a booking made at least 24 hours in advance.">Deux soins supplémentaires — ajoutez-les à n'importe quel lavage, ou réservez-les seuls, directement depuis le formulaire de réservation plus bas. Les deux se font uniquement sur rendez-vous, pris au moins 24 heures à l'avance.</p>
     <div class="grid g3">
       <div class="card"><div class="card-pad">
-        <h3 data-en="Headlight restoration">Restauration des phares</h3>
+        <h3 data-en="Headlight restoration">Restauration des phares <span class="bt" data-en="By appt.">Sur rendez-vous</span></h3>
         <p data-en="Yellowed or hazy headlights dull your vehicle's look and reduce visibility at night. We polish them back to a clear finish and better lighting.">Des phares jaunis ou opaques ternissent l'apparence de votre véhicule et réduisent l'éclairage la nuit. On les polit pour retrouver une transparence claire et un meilleur éclairage.</p>
         <p style="margin-top:16px"><b style="color:var(--acc-clair);font-size:1.3rem">90 $</b> <span class="hint" data-en="+ tax, per pair">+ taxes, la paire</span></p>
+        <p class="hint" style="margin-top:6px" data-en="Booking required, at least 24 hours ahead.">Sur rendez-vous, au moins 24 heures à l'avance.</p>
       </div></div>
       <div class="card"><div class="card-pad">
-        <h3 data-en="Hydrophobic treatment">Traitement hydrophobe</h3>
+        <h3 data-en="Hydrophobic treatment">Traitement hydrophobe <span class="bt" data-en="By appt.">Sur rendez-vous</span></h3>
         <p data-en="Applied to your windshield and windows, it makes rain bead up and roll off instead of spreading — better visibility in the rain, and less work for your wipers.">Appliqué sur le pare-brise et les vitres, il fait perler la pluie et glisser au lieu de s'étaler — meilleure visibilité sous la pluie, et moins de travail pour vos essuie-glaces.</p>
         <p style="margin-top:16px"><b style="color:var(--acc-clair);font-size:1.3rem">55 $</b> <span class="hint" data-en="+ tax">+ taxes</span></p>
+        <p class="hint" style="margin-top:6px" data-en="Booking required, at least 24 hours ahead.">Sur rendez-vous, au moins 24 heures à l'avance.</p>
       </div></div>
     </div>
     <a href="#reservation" class="btn btn-p" style="margin-top:26px" data-en="Book this service">Réserver ce service</a>
@@ -1079,10 +1081,15 @@ footer a:hover{color:var(--acc-clair)}
 </section>
 
 <!-- ============ RÉSERVATION ============ -->
-<section id="reservation" class="bord-haut" aria-labelledby="t-resa">
-  <div class="wrap">
-    <span class="eyebrow" data-en="Booking">Réservation</span>
-    <h2 id="t-resa" data-en="Book your time slot">Réservez votre plage horaire</h2>
+<div class="modal" id="reservation" role="dialog" aria-modal="true" aria-labelledby="t-resa">
+  <div class="modal-in">
+    <div class="modal-head">
+      <div>
+        <span class="eyebrow" data-en="Booking">Réservation</span>
+        <h2 id="t-resa" data-en="Book your time slot">Réservez votre plage horaire</h2>
+      </div>
+      <button class="x" id="resa-fermer" aria-label="Fermer">&times;</button>
+    </div>
     <p class="lead" style="margin-bottom:34px" data-en="You don't need an appointment to come see us. But if you'd like to skip the wait and make sure you're taken care of at a time that suits you, booking is the best option. Choose your package, your vehicle and your time slot. Your request comes straight to us and our team confirms your booking quickly.">Pas besoin de rendez-vous pour venir chez nous. Mais si vous voulez éviter l'attente
        et vous assurer d'être pris en charge à l'heure qui vous convient, la réservation est la
        meilleure option. Choisissez votre forfait, votre véhicule et votre plage horaire. Votre
@@ -1128,11 +1135,15 @@ footer a:hover{color:var(--acc-clair)}
             <select id="f-heure" name="heure" required><option value="" data-en="— Pick a date first —">— Choisir une date d'abord —</option></select>
           </div>
           <div class="field full">
+            <p class="hint" id="hint-samedi" style="display:none" data-en="Saturday bookings must be made at least 1 hour in advance.">Le samedi, réservez au moins 1 heure à l'avance.</p>
+          </div>
+          <div class="field full">
             <label data-en="Additional options">Options supplémentaires</label>
             <div class="extras-choix">
               <label><input type="checkbox" id="ex-phares" value="phares"> <span data-en="Headlight restoration (90 $ + tax)">Restauration des phares (90 $ + taxes)</span></label>
               <label><input type="checkbox" id="ex-hydrophobe" value="hydrophobe"> <span data-en="Hydrophobic treatment (55 $ + tax)">Traitement hydrophobe (55 $ + taxes)</span></label>
             </div>
+            <p class="hint" style="margin-top:8px" data-en="These two options require booking at least 24 hours in advance.">Ces deux options doivent être réservées au moins 24 heures à l'avance.</p>
           </div>
           <div class="field full">
             <label for="f-promo" data-en="Promo code (optional)">Code promo (facultatif)</label>
@@ -1174,7 +1185,7 @@ footer a:hover{color:var(--acc-clair)}
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- ============ FAQ ============ -->
 <section id="faq" class="bord-haut" aria-labelledby="t-faq">
@@ -1856,6 +1867,7 @@ function creneaux(){
     $("#e-date").classList.add("show"); return;
   }
   const d = new Date(v + "T12:00:00"), h = HORAIRES[jourDe(d)];
+  $("#hint-samedi").style.display = jourDe(d) === "samedi" ? "" : "none";
   if (h.ferme_jour){
     heureSel.innerHTML = '<option value="">' + L("Fermé ce jour-là","Closed that day") + '</option>';
     $("#e-date").textContent = L("Nous sommes fermés le " + nomJour(jourDe(d)) + ". Choisissez une autre date.",
@@ -1865,9 +1877,12 @@ function creneaux(){
   const now = new Date();
   const memeJour = d.toDateString() === now.toDateString();
   const maintenant = now.getHours()*60 + now.getMinutes();
+  /* Le samedi, on demande au moins 1 heure d'avance (contre 30 minutes les
+     autres jours) — le samedi se fait davantage sur rendez-vous. */
+  const preavis = jourDe(d) === "samedi" ? 60 : 30;
   const opts = [];
   for (let t = min(h.ouvre); t <= min(h.ferme) - 60; t += 30){
-    if (memeJour && t < maintenant + 30) continue;
+    if (memeJour && t < maintenant + preavis) continue;
     const hh = String(Math.floor(t/60)).padStart(2,"0") + ":" + String(t%60).padStart(2,"0");
     opts.push('<option value="' + hh + '">' + fmt(hh) + '</option>');
   }
@@ -1902,9 +1917,9 @@ Object.keys(EXTRAS).forEach(k => {
   const c = document.getElementById("ex-" + k);
   if (c) c.addEventListener("change", majTotal);
 });
-document.querySelectorAll("[data-pick]").forEach(b => {
-  b.addEventListener("click", () => { $("#f-service").value = b.dataset.pick; majTotal(); });
-});
+/* Les boutons [data-pick] (Réserver le Basic/Super/Deluxe) sont maintenant
+   gérés par ouvrirReservation(pick), plus bas — un seul endroit pour ouvrir
+   la fenêtre de réservation ET présélectionner le forfait. */
 
 /* ---------- application d'un code promo dans le formulaire ---------- */
 $("#promo-appliquer").addEventListener("click", () => {
@@ -2154,6 +2169,30 @@ $("#form").addEventListener("submit", async e => {
     eg.textContent = L("Sélectionnez au moins une option supplémentaire.","Select at least one add-on service.");
     eg.classList.add("show"); return;
   }
+  /* Restauration des phares et traitement hydrophobe : uniquement sur
+     rendez-vous, pris au moins 24 heures à l'avance. */
+  if (clesExtras.some(k => k === "phares" || k === "hydrophobe")){
+    const dtChoisie = new Date(d.date + "T" + d.heure + ":00");
+    const moinsDe24h = dtChoisie.getTime() - Date.now() < 24 * 60 * 60 * 1000;
+    if (moinsDe24h){
+      eg.textContent = L(
+        "La restauration des phares et le traitement hydrophobe doivent être réservés au moins 24 heures à l'avance. Choisissez une plage horaire plus tard, ou retirez cette option.",
+        "Headlight restoration and hydrophobic treatment must be booked at least 24 hours in advance. Please choose a later time slot, or remove this option."
+      );
+      eg.classList.add("show"); return;
+    }
+  }
+  /* Le samedi : réservation au moins 1 heure à l'avance. */
+  {
+    const dtChoisieSamedi = new Date(d.date + "T" + d.heure + ":00");
+    if (jourDe(dtChoisieSamedi) === "samedi" && dtChoisieSamedi.getTime() - Date.now() < 60 * 60 * 1000){
+      eg.textContent = L(
+        "Le samedi, les réservations doivent être prises au moins 1 heure à l'avance. Choisissez une plage horaire plus tard, ou une autre journée.",
+        "Saturday bookings must be made at least 1 hour in advance. Please choose a later time slot, or a different day."
+      );
+      eg.classList.add("show"); return;
+    }
+  }
   eg.classList.remove("show");
   const sousTotal = prixDe(d.service, d.taille) + extrasTotal(clesExtras);
   d.extras = extrasNomsFr(clesExtras);   /* toujours en français, comme les autres champs enregistrés */
@@ -2303,6 +2342,29 @@ $("#send-again").addEventListener("click", () => {
   $("#form").reset(); $("#form").style.display = "";
   majTotal(); creneaux();
 });
+
+/* ---------- Fenêtre de réservation (pop-up plutôt que défilement) ----------
+   Tous les boutons « Réserver » du site (forfaits, CTA, barre du bas, nav...)
+   pointent vers #reservation. Plutôt que de laisser le navigateur y faire
+   défiler la page, on intercepte le clic et on ouvre la fenêtre directement
+   — pratique sur mobile, où défiler jusqu'en bas du formulaire est pénible. */
+function ouvrirReservation(pick){
+  if (pick){ $("#f-service").value = pick; majTotal(); }
+  $("#reservation").classList.add("show");
+}
+function fermerReservation(){
+  $("#reservation").classList.remove("show");
+}
+document.addEventListener("click", e => {
+  const lien = e.target.closest('a[href="#reservation"]');
+  if (!lien) return;
+  e.preventDefault();
+  ouvrirReservation(lien.dataset.pick || "");
+});
+$("#resa-fermer").addEventListener("click", fermerReservation);
+$("#reservation").addEventListener("click", e => { if (e.target.id === "reservation") fermerReservation(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("#reservation").classList.contains("show")) fermerReservation(); });
+if (location.hash === "#reservation") ouvrirReservation();
 
 /* Suivi Google Analytics des clics sur un numéro de téléphone (topbar,
    pied de page, bouton d'appel du bas d'écran, etc.) — un seul écouteur
