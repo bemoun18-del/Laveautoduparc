@@ -493,9 +493,29 @@ input[type=date],input[type=time]{color-scheme:dark}
 .ferm-row .txt span{color:var(--gris);display:block;font-size:.82rem;margin-top:2px}
 .ferm-row button{background:none;border:0;color:var(--rouge);cursor:pointer;font-size:1.3rem;line-height:1;padding:4px 8px;flex-shrink:0}
 .ferm-vide{color:var(--gris);font-size:.87rem;padding:6px 0 2px}
+.empl-row{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px 0;border-bottom:1px solid var(--ligne)}
+.empl-row:last-child{border-bottom:0}
+.empl-row.inactif{opacity:.55}
+.empl-row .txt{font-size:.89rem}
+.empl-row .txt b{font-weight:650}
+.empl-row .txt span{color:var(--gris);display:block;font-size:.82rem;margin-top:2px}
+.empl-row .actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.empl-row .x-retirer{background:none;border:0;color:var(--rouge);cursor:pointer;font-size:1.3rem;
+  line-height:1;padding:4px 8px}
 .champ-promo{display:grid;grid-template-columns:1fr .8fr .7fr 1fr 1fr;gap:11px;align-items:end}
 .champ-promo .field label{font-size:.78rem;color:var(--gris)}
 @media(max-width:900px){.champ-promo{grid-template-columns:1fr 1fr}}
+.champ-employe{display:grid;grid-template-columns:1.4fr 1fr auto;gap:11px;align-items:end}
+.champ-employe .field label{font-size:.78rem;color:var(--gris)}
+@media(max-width:820px){.champ-employe{grid-template-columns:1fr 1fr}.champ-employe button{grid-column:1/-1}}
+.champ-quart{display:grid;grid-template-columns:1.1fr 1fr .7fr .7fr auto;gap:11px;align-items:end}
+.champ-quart .field label{font-size:.78rem;color:var(--gris)}
+@media(max-width:900px){.champ-quart{grid-template-columns:1fr 1fr}.champ-quart button{grid-column:1/-1}}
+.champ-caisse{display:grid;grid-template-columns:.8fr 1fr 1fr .8fr .8fr 1fr;gap:11px;align-items:end}
+.champ-caisse .field label{font-size:.78rem;color:var(--gris)}
+@media(max-width:900px){.champ-caisse{grid-template-columns:1fr 1fr}}
+.stat.avertit b{color:var(--rouge)}
 .champ-promo-bas{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;flex-wrap:wrap}
 .champ-promo-bas label{display:flex;align-items:center;gap:7px;font-size:.83rem;color:var(--gris);text-transform:none;letter-spacing:0;cursor:pointer}
 .champ-promo-bas input[type=checkbox]{width:auto;accent-color:var(--acc)}
@@ -1373,6 +1393,8 @@ footer a:hover{color:var(--acc-clair)}
         <button class="tab" data-pane="p-heures">Heures d'ouverture</button>
         <button class="tab" data-pane="p-fermetures">Fermetures</button>
         <button class="tab" data-pane="p-promos">Promotions</button>
+        <button class="tab" data-pane="p-employes">Employés</button>
+        <button class="tab" data-pane="p-caisse">Caisse</button>
         <button class="tab" data-pane="p-aide">Connexion des données</button>
       </div>
 
@@ -1487,6 +1509,133 @@ footer a:hover{color:var(--acc-clair)}
           <b>Comment ça marche :</b> Laissez « Du » et « Au » vides pour une promotion permanente, ou fixez des
           dates pour une promotion périodique (ex. : un mois précis). Décochez un code pour le suspendre sans le
           supprimer. Cliquez « Enregistrer » pour que le rabais s'applique tout de suite pour vos visiteurs.
+        </div>
+      </div>
+
+      <div class="pane" id="p-employes">
+        <div class="notice" id="empl-necessite-supabase" style="display:none">
+          Cette section a besoin de Supabase pour fonctionner (plusieurs employés, gestion à distance).
+          Suivez <code>GUIDE-SUPABASE.md</code> puis lancez <code>supabase-employes-caisse.sql</code>.
+        </div>
+        <div id="empl-corps">
+          <h3 style="font-size:1.1rem;margin-bottom:6px">Vos employés</h3>
+          <p class="hint" style="margin-bottom:18px">Ajoutez chaque employé avec un court code personnel (comme un NIP).
+             Il l'utilisera, avec son nom, pour entrer ses disponibilités.</p>
+          <div class="champ-employe" id="champ-employe">
+            <div class="field">
+              <label for="em-nom">Nom</label>
+              <input type="text" id="em-nom" placeholder="Prénom Nom">
+            </div>
+            <div class="field">
+              <label for="em-code">Code personnel</label>
+              <input type="text" id="em-code" placeholder="1234" maxlength="12">
+            </div>
+            <button class="btn btn-g" id="em-ajouter" type="button">Ajouter</button>
+          </div>
+          <div id="employes-rows" style="margin-top:18px"></div>
+          <p class="saved" id="employes-saved"></p>
+
+          <div class="notice" style="margin-top:26px">
+            <b>Lien à partager avec vos employés :</b><br>
+            <a id="lien-employe" href="dispo-employes.html" target="_blank" rel="noopener" style="color:var(--acc-clair);word-break:break-all">dispo-employes.html</a>
+            <br>Ils y choisissent leur nom, entrent leur code, et indiquent leurs disponibilités —
+            sans avoir besoin d'un compte.
+          </div>
+
+          <h3 style="font-size:1.1rem;margin:30px 0 6px">Disponibilités reçues</h3>
+          <p class="hint" style="margin-bottom:14px">Une fois qu'un employé a indiqué une disponibilité, ajoutez-la
+             à l'horaire confirmé ci-dessous (ou retirez-la si elle ne convient pas).</p>
+          <div id="couverture-alerte"></div>
+          <div class="tbl-wrap"><table class="resa"><thead><tr>
+            <th>Employé</th><th>Date</th><th>De</th><th>À</th><th>Actions</th>
+          </tr></thead><tbody id="dispo-tbody"></tbody></table></div>
+
+          <h3 style="font-size:1.1rem;margin:30px 0 6px">Horaire confirmé</h3>
+          <p class="hint" style="margin-bottom:14px">Au moins un employé par quart : la liste ci-dessus vous
+             signale les prochains jours ouverts sans personne d'assigné.</p>
+          <div class="champ-quart" id="champ-quart">
+            <div class="field">
+              <label for="qt-employe">Employé</label>
+              <select id="qt-employe"></select>
+            </div>
+            <div class="field">
+              <label for="qt-date">Date</label>
+              <input type="date" id="qt-date">
+            </div>
+            <div class="field">
+              <label for="qt-debut">De</label>
+              <input type="time" id="qt-debut">
+            </div>
+            <div class="field">
+              <label for="qt-fin">À</label>
+              <input type="time" id="qt-fin">
+            </div>
+            <button class="btn btn-g" id="qt-ajouter" type="button">Ajouter</button>
+          </div>
+          <p class="saved" id="quart-saved"></p>
+          <div class="tbl-wrap" style="margin-top:14px"><table class="resa"><thead><tr>
+            <th>Date</th><th>Employé</th><th>De</th><th>À</th><th>Actions</th>
+          </tr></thead><tbody id="quart-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <div class="pane" id="p-caisse">
+        <div class="notice" id="caisse-necessite-supabase" style="display:none">
+          Cette section a besoin de Supabase pour fonctionner. Suivez <code>GUIDE-SUPABASE.md</code> puis
+          lancez <code>supabase-employes-caisse.sql</code>.
+        </div>
+        <div id="caisse-corps">
+          <p class="hint" style="margin-bottom:18px">Pour les clients qui paient directement sur place (comptant ou
+             Interac) plutôt qu'en ligne — pour garder une trace, et savoir qui l'a reçu.</p>
+          <div class="champ-caisse" id="champ-caisse">
+            <div class="field">
+              <label for="ca-date">Date</label>
+              <input type="date" id="ca-date">
+            </div>
+            <div class="field">
+              <label for="ca-client">Client</label>
+              <input type="text" id="ca-client" placeholder="Nom du client">
+            </div>
+            <div class="field">
+              <label for="ca-service">Service</label>
+              <input type="text" id="ca-service" placeholder="Ex. Super, Deluxe…">
+            </div>
+            <div class="field">
+              <label for="ca-montant">Montant ($)</label>
+              <input type="number" id="ca-montant" min="0" step="0.01" placeholder="45">
+            </div>
+            <div class="field">
+              <label for="ca-methode">Méthode</label>
+              <select id="ca-methode"><option>Cash</option><option>Interac</option></select>
+            </div>
+            <div class="field">
+              <label for="ca-proprio">Reçu par</label>
+              <select id="ca-proprio"></select>
+            </div>
+          </div>
+          <div class="champ-promo-bas">
+            <span></span>
+            <button class="btn btn-g" id="ca-ajouter" type="button">Ajouter l'encaissement</button>
+          </div>
+          <p class="saved" id="caisse-saved"></p>
+
+          <div class="filtres" style="margin-top:26px">
+            <input type="month" id="ca-mois">
+            <button class="btn btn-g btn-xs" id="ca-refresh">Actualiser</button>
+          </div>
+          <div class="stats-adm" id="ca-stats" style="margin-top:16px"></div>
+          <div class="tbl-wrap"><table class="resa"><thead><tr>
+            <th>Date</th><th>Client</th><th>Service</th><th>Montant</th><th>Méthode</th><th>Reçu par</th><th>Actions</th>
+          </tr></thead><tbody id="ca-tbody"></tbody></table></div>
+
+          <div class="notice" style="margin-top:26px">
+            <b>Noms des copropriétaires</b> (utilisés dans « Reçu par » ci-dessus) :
+            <div class="champ-ferm" style="grid-template-columns:1fr 1fr auto;margin-top:12px">
+              <div class="field"><input type="text" id="pp-nom1" placeholder="Propriétaire 1"></div>
+              <div class="field"><input type="text" id="pp-nom2" placeholder="Propriétaire 2"></div>
+              <button class="btn btn-g btn-xs" id="pp-enregistrer" type="button">Enregistrer</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2097,6 +2246,124 @@ const SB = {
       if (res.status === 409) return false;
       return true;
     } catch(e){ return true; }
+  },
+
+  /* ---------- Employés (espace admin) ---------- */
+  async lireEmployes(token){
+    const res = await fetch(this.base() + "/rest/v1/employes?select=*&order=nom.asc", {
+      headers: this.entetes({ "Authorization":"Bearer " + token })
+    });
+    if (res.status === 401 || res.status === 403) throw new Error("Session expirée. Reconnectez-vous.");
+    if (!res.ok) throw new Error("Lecture des employés impossible (" + res.status + ").");
+    return res.json();
+  },
+  async creerEmploye(e, token){
+    const res = await fetch(this.base() + "/rest/v1/employes", {
+      method:"POST", headers: this.entetes({ "Authorization":"Bearer " + token, "Prefer":"return=representation" }),
+      body: JSON.stringify(e)
+    });
+    if (!res.ok) throw new Error("Ajout impossible (" + res.status + ").");
+    const j = await res.json();
+    return j[0];
+  },
+  async majEmploye(id, champs, token){
+    const res = await fetch(this.base() + "/rest/v1/employes?id=eq." + encodeURIComponent(id), {
+      method:"PATCH", headers: this.entetes({ "Authorization":"Bearer " + token, "Prefer":"return=minimal" }),
+      body: JSON.stringify(champs)
+    });
+    if (!res.ok) throw new Error("Mise à jour impossible (" + res.status + ").");
+  },
+  async supprimerEmploye(id, token){
+    const res = await fetch(this.base() + "/rest/v1/employes?id=eq." + encodeURIComponent(id), {
+      method:"DELETE", headers: this.entetes({ "Authorization":"Bearer " + token })
+    });
+    if (!res.ok) throw new Error("Suppression impossible (" + res.status + ").");
+  },
+
+  /* ---------- Disponibilités (lecture/suppression admin uniquement —
+     l'ajout se fait par les employés eux-mêmes, via dispo-employes.html) ---------- */
+  async lireDisponibilites(token){
+    const res = await fetch(this.base() + "/rest/v1/disponibilites?select=*,employes(nom)&order=date.asc,heure_debut.asc", {
+      headers: this.entetes({ "Authorization":"Bearer " + token })
+    });
+    if (res.status === 401 || res.status === 403) throw new Error("Session expirée. Reconnectez-vous.");
+    if (!res.ok) throw new Error("Lecture des disponibilités impossible (" + res.status + ").");
+    return res.json();
+  },
+  async supprimerDisponibiliteAdmin(id, token){
+    const res = await fetch(this.base() + "/rest/v1/disponibilites?id=eq." + encodeURIComponent(id), {
+      method:"DELETE", headers: this.entetes({ "Authorization":"Bearer " + token })
+    });
+    if (!res.ok) throw new Error("Suppression impossible (" + res.status + ").");
+  },
+
+  /* ---------- Horaire confirmé (quarts) ---------- */
+  async lireQuarts(token){
+    const res = await fetch(this.base() + "/rest/v1/quarts?select=*,employes(nom)&order=date.asc,heure_debut.asc", {
+      headers: this.entetes({ "Authorization":"Bearer " + token })
+    });
+    if (res.status === 401 || res.status === 403) throw new Error("Session expirée. Reconnectez-vous.");
+    if (!res.ok) throw new Error("Lecture de l'horaire impossible (" + res.status + ").");
+    return res.json();
+  },
+  async creerQuart(q, token){
+    const res = await fetch(this.base() + "/rest/v1/quarts", {
+      method:"POST", headers: this.entetes({ "Authorization":"Bearer " + token, "Prefer":"return=representation" }),
+      body: JSON.stringify(q)
+    });
+    if (!res.ok) throw new Error("Ajout impossible (" + res.status + ").");
+    const j = await res.json();
+    return j[0];
+  },
+  async supprimerQuart(id, token){
+    const res = await fetch(this.base() + "/rest/v1/quarts?id=eq." + encodeURIComponent(id), {
+      method:"DELETE", headers: this.entetes({ "Authorization":"Bearer " + token })
+    });
+    if (!res.ok) throw new Error("Suppression impossible (" + res.status + ").");
+  },
+
+  /* ---------- Caisse (encaissements comptant/Interac reçus sur place) ---------- */
+  async lireEncaissements(token){
+    const res = await fetch(this.base() + "/rest/v1/encaissements?select=*&order=date.desc,cree.desc", {
+      headers: this.entetes({ "Authorization":"Bearer " + token })
+    });
+    if (res.status === 401 || res.status === 403) throw new Error("Session expirée. Reconnectez-vous.");
+    if (!res.ok) throw new Error("Lecture de la caisse impossible (" + res.status + ").");
+    return res.json();
+  },
+  async creerEncaissement(c, token){
+    const res = await fetch(this.base() + "/rest/v1/encaissements", {
+      method:"POST", headers: this.entetes({ "Authorization":"Bearer " + token, "Prefer":"return=representation" }),
+      body: JSON.stringify(c)
+    });
+    if (!res.ok) throw new Error("Ajout impossible (" + res.status + ").");
+    const j = await res.json();
+    return j[0];
+  },
+  async supprimerEncaissement(id, token){
+    const res = await fetch(this.base() + "/rest/v1/encaissements?id=eq." + encodeURIComponent(id), {
+      method:"DELETE", headers: this.entetes({ "Authorization":"Bearer " + token })
+    });
+    if (!res.ok) throw new Error("Suppression impossible (" + res.status + ").");
+  },
+
+  /* ---------- Noms des copropriétaires, même table "parametres", clé "proprietaires" ---------- */
+  async lireProprietaires(){
+    const res = await fetch(this.base() + "/rest/v1/parametres?select=valeur&cle=eq.proprietaires", {
+      headers: this.entetes()
+    });
+    if (!res.ok) return null;
+    const j = await res.json().catch(() => []);
+    return (j && j[0] && j[0].valeur) || null;
+  },
+  async majProprietaires(valeur, token){
+    const res = await fetch(this.base() + "/rest/v1/parametres?cle=eq.proprietaires", {
+      method:"PATCH",
+      headers: this.entetes({ "Authorization":"Bearer " + token, "Prefer":"return=minimal" }),
+      body: JSON.stringify({ valeur: valeur })
+    });
+    if (res.status === 401 || res.status === 403) throw new Error("Session expirée. Reconnectez-vous.");
+    if (!res.ok) throw new Error("Enregistrement impossible (" + res.status + ").");
   }
 };
 
@@ -2437,6 +2704,7 @@ $("#adm-go").addEventListener("click", async () => {
       await SB.lirePromos().then(appliquerPromos).catch(() => {});
     }
     rendreAdminHeures(); rendreAdminFermetures(); rendreAdminPromos(); majAide(); rendreTable();
+    await initEmployesCaisse();
   } catch(e){
     err.textContent = e.message || "Connexion impossible."; err.classList.add("show");
   }
@@ -2730,6 +2998,288 @@ $("#promo-apply").addEventListener("click", async () => {
     saved.textContent = "✓ Promotions appliquées sur cet appareil (mode local — connectez Supabase pour que ce soit permanent).";
     saved.classList.add("show");
   }
+});
+
+/* ============================================================
+   EMPLOYÉS, HORAIRE ET CAISSE
+   ============================================================ */
+let EMPLOYES = [], DISPOS = [], QUARTS = [], ENCAISSEMENTS = [];
+let PROPRIETAIRES = ["Propriétaire 1","Propriétaire 2"];
+const heureCourte = t => (t || "").slice(0,5);
+
+async function initEmployesCaisse(){
+  const dispoBloc = MODE === "supabase";
+  $("#empl-necessite-supabase").style.display = dispoBloc ? "none" : "";
+  $("#empl-corps").style.display = dispoBloc ? "" : "none";
+  $("#caisse-necessite-supabase").style.display = dispoBloc ? "none" : "";
+  $("#caisse-corps").style.display = dispoBloc ? "" : "none";
+  if (!dispoBloc) return;
+  try {
+    const [emp, dis, qua, enc] = await Promise.all([
+      SB.lireEmployes(jeton), SB.lireDisponibilites(jeton), SB.lireQuarts(jeton), SB.lireEncaissements(jeton)
+    ]);
+    EMPLOYES = emp; DISPOS = dis; QUARTS = qua; ENCAISSEMENTS = enc;
+    const pr = await SB.lireProprietaires();
+    if (Array.isArray(pr) && pr.length === 2) PROPRIETAIRES = pr;
+  } catch(e){ /* rendus ci-dessous : tableaux vides plutôt qu'un blocage */ }
+  const lien = new URL("dispo-employes.html", location.href).href;
+  $("#lien-employe").href = lien; $("#lien-employe").textContent = lien;
+  rendreAdminEmployes();
+  rendreDispoTbody();
+  rendreQuartTbody();
+  rendreCouverture();
+  rendreProprioSelect();
+  rendreCaisse();
+  $("#pp-nom1").value = PROPRIETAIRES[0] || "";
+  $("#pp-nom2").value = PROPRIETAIRES[1] || "";
+  if (!$("#ca-mois").value) $("#ca-mois").value = new Date().toISOString().slice(0,7);
+  if (!$("#ca-date").value) $("#ca-date").value = new Date().toISOString().slice(0,10);
+}
+
+/* ---------- Employés ---------- */
+function rendreAdminEmployes(){
+  const zone = $("#employes-rows");
+  zone.innerHTML = !EMPLOYES.length
+    ? '<p class="ferm-vide">Aucun employé ajouté.</p>'
+    : EMPLOYES.map(e =>
+        '<div class="empl-row' + (e.actif === false ? ' inactif' : '') + '"><div class="txt"><b>' + esc(e.nom) + '</b>' +
+        (e.actif === false ? ' <span class="pill inactif">Inactif</span>' : '') +
+        '<span>Code : ' + esc(e.code) + '</span></div>' +
+        '<div class="actions">' +
+          '<button class="btn btn-g btn-xs" type="button" data-act="' + (e.actif === false ? "activer" : "desactiver") + '" data-id="' + esc(e.id) + '">' +
+            (e.actif === false ? "Réactiver" : "Désactiver") + '</button>' +
+          '<button type="button" class="x-retirer" data-act="supprimer" data-id="' + esc(e.id) + '" aria-label="Supprimer définitivement">×</button>' +
+        '</div></div>'
+      ).join("");
+  const actifs = EMPLOYES.filter(e => e.actif !== false);
+  $("#qt-employe").innerHTML = actifs.length
+    ? actifs.map(e => '<option value="' + esc(e.id) + '">' + esc(e.nom) + '</option>').join("")
+    : '<option value="">— Aucun employé actif —</option>';
+}
+$("#em-ajouter").addEventListener("click", async () => {
+  const nom = $("#em-nom").value.trim();
+  const code = $("#em-code").value.trim();
+  const msg = $("#employes-saved");
+  msg.classList.remove("show","err");
+  if (!nom){ msg.textContent = "Entrez un nom."; msg.classList.add("show","err"); return; }
+  if (!code){ msg.textContent = "Entrez un code personnel."; msg.classList.add("show","err"); return; }
+  const btn = $("#em-ajouter");
+  btn.disabled = true; btn.textContent = "Ajout…";
+  try {
+    const nouveau = await SB.creerEmploye({ nom, code, actif:true }, jeton);
+    EMPLOYES.push(nouveau);
+    rendreAdminEmployes();
+    $("#em-nom").value = ""; $("#em-code").value = "";
+    msg.textContent = "✓ Employé ajouté."; msg.classList.add("show");
+  } catch(e){
+    msg.textContent = e.message; msg.classList.add("show","err");
+  }
+  btn.disabled = false; btn.textContent = "Ajouter";
+});
+$("#employes-rows").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-act]"); if (!b) return;
+  const id = b.dataset.id, act = b.dataset.act;
+  const employe = EMPLOYES.find(x => x.id === id);
+  b.disabled = true;
+  try {
+    if (act === "desactiver" || act === "activer"){
+      await SB.majEmploye(id, { actif: act === "activer" }, jeton);
+      if (employe) employe.actif = (act === "activer");
+    } else if (act === "supprimer"){
+      await SB.supprimerEmploye(id, jeton);
+      EMPLOYES = EMPLOYES.filter(x => x.id !== id);
+      DISPOS = DISPOS.filter(x => x.employe_id !== id);
+      QUARTS = QUARTS.filter(x => x.employe_id !== id);
+      rendreDispoTbody(); rendreQuartTbody(); rendreCouverture();
+    }
+    rendreAdminEmployes();
+  } catch(err){ alert(err.message); }
+  b.disabled = false;
+});
+
+/* ---------- Disponibilités reçues ---------- */
+function rendreDispoTbody(){
+  if (!DISPOS.length){
+    $("#dispo-tbody").innerHTML = '<tr><td colspan="5"><div class="vide">Aucune disponibilité reçue.</div></td></tr>';
+    return;
+  }
+  $("#dispo-tbody").innerHTML = DISPOS.map(d => {
+    const dl = new Date((d.date||"1970-01-01")+"T12:00:00").toLocaleDateString("fr-CA",{weekday:"short",day:"numeric",month:"short"});
+    const nomE = (d.employes && d.employes.nom) || "—";
+    return '<tr><td>' + esc(nomE) + '</td><td>' + esc(dl) + '</td><td>' + esc(fmt(heureCourte(d.heure_debut))) + '</td><td>' + esc(fmt(heureCourte(d.heure_fin))) + '</td>' +
+      '<td><div class="act-row">' +
+      '<button class="btn btn-g btn-xs" data-act="assigner-dispo" data-id="' + esc(d.id) + '">Ajouter à l\'horaire</button>' +
+      '<button class="btn btn-g btn-xs" data-act="retirer-dispo" data-id="' + esc(d.id) + '">Retirer</button>' +
+      '</div></td></tr>';
+  }).join("");
+}
+$("#dispo-tbody").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-act]"); if (!b) return;
+  const id = b.dataset.id, act = b.dataset.act;
+  const d = DISPOS.find(x => x.id === id);
+  if (!d) return;
+  b.disabled = true;
+  try {
+    if (act === "assigner-dispo"){
+      const nouveau = await SB.creerQuart({ employe_id: d.employe_id, date: d.date, heure_debut: d.heure_debut, heure_fin: d.heure_fin }, jeton);
+      nouveau.employes = d.employes;
+      QUARTS.push(nouveau);
+      await SB.supprimerDisponibiliteAdmin(id, jeton);
+      DISPOS = DISPOS.filter(x => x.id !== id);
+      rendreQuartTbody(); rendreCouverture(); rendreDispoTbody();
+    } else if (act === "retirer-dispo"){
+      await SB.supprimerDisponibiliteAdmin(id, jeton);
+      DISPOS = DISPOS.filter(x => x.id !== id);
+      rendreDispoTbody();
+    }
+  } catch(err){ alert(err.message); }
+  b.disabled = false;
+});
+
+/* ---------- Horaire confirmé ---------- */
+function rendreQuartTbody(){
+  if (!QUARTS.length){
+    $("#quart-tbody").innerHTML = '<tr><td colspan="5"><div class="vide">Aucun quart assigné.</div></td></tr>';
+    return;
+  }
+  const triees = QUARTS.slice().sort((a,b) => (a.date+heureCourte(a.heure_debut)).localeCompare(b.date+heureCourte(b.heure_debut)));
+  $("#quart-tbody").innerHTML = triees.map(q => {
+    const dl = new Date((q.date||"1970-01-01")+"T12:00:00").toLocaleDateString("fr-CA",{weekday:"short",day:"numeric",month:"short"});
+    const nomE = (q.employes && q.employes.nom) || "—";
+    return '<tr><td>' + esc(dl) + '</td><td>' + esc(nomE) + '</td><td>' + esc(fmt(heureCourte(q.heure_debut))) + '</td><td>' + esc(fmt(heureCourte(q.heure_fin))) + '</td>' +
+      '<td><button class="btn btn-g btn-xs" data-act="supprimer-quart" data-id="' + esc(q.id) + '">Retirer</button></td></tr>';
+  }).join("");
+}
+$("#quart-tbody").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-act]"); if (!b) return;
+  b.disabled = true;
+  try {
+    await SB.supprimerQuart(b.dataset.id, jeton);
+    QUARTS = QUARTS.filter(x => x.id !== b.dataset.id);
+    rendreQuartTbody(); rendreCouverture();
+  } catch(err){ alert(err.message); b.disabled = false; }
+});
+$("#qt-ajouter").addEventListener("click", async () => {
+  const employeId = $("#qt-employe").value;
+  const date = $("#qt-date").value, debut = $("#qt-debut").value, fin = $("#qt-fin").value;
+  const msg = $("#quart-saved");
+  msg.classList.remove("show","err");
+  if (!employeId){ msg.textContent = "Choisissez un employé."; msg.classList.add("show","err"); return; }
+  if (!date || !debut || !fin){ msg.textContent = "Remplissez la date et les deux heures."; msg.classList.add("show","err"); return; }
+  if (fin <= debut){ msg.textContent = "L'heure de fin doit être après l'heure de début."; msg.classList.add("show","err"); return; }
+  const btn = $("#qt-ajouter");
+  btn.disabled = true; btn.textContent = "Ajout…";
+  try {
+    const nouveau = await SB.creerQuart({ employe_id: employeId, date, heure_debut: debut, heure_fin: fin }, jeton);
+    nouveau.employes = { nom: (EMPLOYES.find(x => x.id === employeId) || {}).nom || "" };
+    QUARTS.push(nouveau);
+    rendreQuartTbody(); rendreCouverture();
+    $("#qt-date").value = ""; $("#qt-debut").value = ""; $("#qt-fin").value = "";
+    msg.textContent = "✓ Quart ajouté."; msg.classList.add("show");
+  } catch(e){
+    msg.textContent = e.message; msg.classList.add("show","err");
+  }
+  btn.disabled = false; btn.textContent = "Ajouter";
+});
+
+/* ---------- Couverture : jours ouverts des 7 prochains jours sans personne d'assigné ---------- */
+function rendreCouverture(){
+  const zone = $("#couverture-alerte");
+  const auj = new Date(); auj.setHours(0,0,0,0);
+  const manque = [];
+  for (let i=0;i<7;i++){
+    const d = new Date(auj); d.setDate(d.getDate()+i);
+    const iso = d.toISOString().slice(0,10);
+    const h = HORAIRES[jourDe(d)];
+    if (!h || h.ferme_jour) continue;
+    if (typeof fermetureActive === "function" && fermetureActive(iso)) continue;
+    if (!QUARTS.some(q => q.date === iso)) manque.push(d);
+  }
+  zone.innerHTML = !manque.length ? "" :
+    '<div class="notice alerte" style="margin-bottom:18px"><b>⚠ Aucun employé assigné :</b> ' +
+    manque.map(d => esc(d.toLocaleDateString("fr-CA",{weekday:"short",day:"numeric",month:"short"}))).join(", ") + '</div>';
+}
+
+/* ---------- Caisse ---------- */
+function rendreProprioSelect(){
+  $("#ca-proprio").innerHTML = PROPRIETAIRES.map(p => '<option>' + esc(p) + '</option>').join("");
+}
+function filtreesCaisse(){
+  const mois = $("#ca-mois").value;
+  return !mois ? ENCAISSEMENTS.slice() : ENCAISSEMENTS.filter(c => (c.date||"").slice(0,7) === mois);
+}
+function rendreCaisse(){
+  const rows = filtreesCaisse();
+  const total = rows.reduce((s,c) => s + Number(c.montant||0), 0);
+  const parMethode = {}, parProprio = {};
+  rows.forEach(c => {
+    parMethode[c.methode] = (parMethode[c.methode]||0) + Number(c.montant||0);
+    parProprio[c.proprietaire] = (parProprio[c.proprietaire]||0) + Number(c.montant||0);
+  });
+  $("#ca-stats").innerHTML =
+    '<div class="stat"><b>' + total.toFixed(2) + ' $</b><span>Total du mois</span></div>' +
+    Object.keys(parMethode).map(m => '<div class="stat"><b>' + parMethode[m].toFixed(2) + ' $</b><span>' + esc(m) + '</span></div>').join("") +
+    Object.keys(parProprio).map(p => '<div class="stat"><b>' + parProprio[p].toFixed(2) + ' $</b><span>' + esc(p) + '</span></div>').join("");
+
+  $("#ca-tbody").innerHTML = !rows.length
+    ? '<tr><td colspan="7"><div class="vide">Aucun encaissement pour ce mois.</div></td></tr>'
+    : rows.map(c => {
+        const dl = new Date((c.date||"1970-01-01")+"T12:00:00").toLocaleDateString("fr-CA",{weekday:"short",day:"numeric",month:"short"});
+        return '<tr><td>' + esc(dl) + '</td><td>' + esc(c.client||"—") + '</td><td>' + esc(c.service||"—") + '</td>' +
+          '<td><b style="color:var(--acc-clair)">' + Number(c.montant||0).toFixed(2) + ' $</b></td>' +
+          '<td>' + esc(c.methode) + '</td><td>' + esc(c.proprietaire) + '</td>' +
+          '<td><button class="btn btn-g btn-xs" data-act="supprimer-caisse" data-id="' + esc(c.id) + '">Supprimer</button></td></tr>';
+      }).join("");
+}
+$("#ca-ajouter").addEventListener("click", async () => {
+  const date = $("#ca-date").value;
+  const client = $("#ca-client").value.trim();
+  const service = $("#ca-service").value.trim();
+  const montant = Number($("#ca-montant").value);
+  const methode = $("#ca-methode").value;
+  const proprietaire = $("#ca-proprio").value;
+  const msg = $("#caisse-saved");
+  msg.classList.remove("show","err");
+  if (!date){ msg.textContent = "Choisissez une date."; msg.classList.add("show","err"); return; }
+  if (!montant || montant <= 0){ msg.textContent = "Entrez un montant supérieur à zéro."; msg.classList.add("show","err"); return; }
+  if (!proprietaire){ msg.textContent = "Choisissez qui a reçu ce paiement."; msg.classList.add("show","err"); return; }
+  const btn = $("#ca-ajouter");
+  btn.disabled = true; btn.textContent = "Ajout…";
+  try {
+    const nouveau = await SB.creerEncaissement({ date, client: client||null, service: service||null, montant, methode, proprietaire }, jeton);
+    ENCAISSEMENTS.unshift(nouveau);
+    rendreCaisse();
+    $("#ca-client").value = ""; $("#ca-service").value = ""; $("#ca-montant").value = "";
+    msg.textContent = "✓ Encaissement ajouté."; msg.classList.add("show");
+  } catch(e){
+    msg.textContent = e.message; msg.classList.add("show","err");
+  }
+  btn.disabled = false; btn.textContent = "Ajouter l'encaissement";
+});
+$("#ca-tbody").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-act]"); if (!b) return;
+  b.disabled = true;
+  try {
+    await SB.supprimerEncaissement(b.dataset.id, jeton);
+    ENCAISSEMENTS = ENCAISSEMENTS.filter(x => x.id !== b.dataset.id);
+    rendreCaisse();
+  } catch(err){ alert(err.message); b.disabled = false; }
+});
+$("#ca-mois").addEventListener("change", rendreCaisse);
+$("#ca-refresh").addEventListener("click", async () => {
+  try { ENCAISSEMENTS = await SB.lireEncaissements(jeton); rendreCaisse(); } catch(e){ alert(e.message); }
+});
+$("#pp-enregistrer").addEventListener("click", async () => {
+  const n1 = $("#pp-nom1").value.trim() || "Propriétaire 1";
+  const n2 = $("#pp-nom2").value.trim() || "Propriétaire 2";
+  const btn = $("#pp-enregistrer");
+  btn.disabled = true; btn.textContent = "Enregistrement…";
+  try {
+    PROPRIETAIRES = [n1, n2];
+    await SB.majProprietaires(PROPRIETAIRES, jeton);
+    rendreProprioSelect();
+  } catch(e){ alert(e.message); }
+  btn.disabled = false; btn.textContent = "Enregistrer";
 });
 
 /* ---------- données structurées (SEO) — tenues à jour avec les heures réelles ---------- */
