@@ -64,6 +64,10 @@
     border-bottom:1px solid var(--ligne);font-size:.87rem}
   .recente:last-child{border-bottom:0}
   .recente span{color:var(--gris)}
+  .recente .actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+  .recente .rm-modifier,.recente .rm-retirer{background:none;border:0;cursor:pointer;font-size:1rem;padding:4px 6px;line-height:1}
+  .recente .rm-modifier{color:var(--gris)}
+  .recente .rm-retirer{color:var(--rouge);font-size:1.2rem}
   .solde{background:var(--charbon-2);border:1px solid var(--ligne);border-radius:10px;padding:16px;margin-bottom:20px}
   .solde-montant{font-size:1.6rem;font-weight:750;color:var(--acc-clair);margin:0}
 </style>
@@ -134,7 +138,10 @@
             <input type="number" id="rm-montant" min="0" step="0.01" placeholder="45">
           </div>
         </div>
-        <button class="btn btn-g" id="rm-transferer" type="button">J'ai transféré cet argent</button>
+        <div class="rangee" style="margin-top:16px">
+          <button class="btn btn-g" id="rm-transferer" type="button">J'ai transféré cet argent</button>
+          <button class="btn btn-g" id="rm-annuler" type="button" style="display:none">Annuler la correction</button>
+        </div>
         <p class="err" id="rm-err"></p>
         <p class="ok" id="rm-ok">✓ Remise enregistrée.</p>
         <div class="liste" id="rm-liste"></div>
@@ -293,10 +300,11 @@ async function connecter(){
     $("#ca-date").min = min31.toISOString().slice(0,10);
     $("#ca-date").max = auj.toISOString().slice(0,10);
     $("#ca-date").value = auj.toISOString().slice(0,10);
-    ajoutsRecents = []; remisesRecentes = [];
-    dessinerRecents(); dessinerRemises();
+    ajoutsRecents = []; mesRemises = []; remiseEnEdition = null;
+    dessinerRecents();
     try {
       soldeActuel = await rpc("caisse_solde", { p_employe_id: employeId, p_code: code });
+      await rafraichirRemises();
       dessinerSolde();
     } catch(e2){ /* pas bloquant : le formulaire d'ajout reste utilisable */ }
   } catch(e){
@@ -367,7 +375,7 @@ $("#d-liste").addEventListener("click", async e => {
 });
 
 $("#d-deco").addEventListener("click", () => {
-  employeId = ""; code = ""; nomEmploye = ""; ajoutsRecents = []; remisesRecentes = []; soldeActuel = 0;
+  employeId = ""; code = ""; nomEmploye = ""; ajoutsRecents = []; mesRemises = []; remiseEnEdition = null; soldeActuel = 0;
   $("#c-code").value = ""; $("#c-nom").value = "";
   $("#carte-dispo").style.display = "none";
   $("#carte-connexion").style.display = "";
@@ -417,21 +425,66 @@ $("#ca-ajouter").addEventListener("click", async () => {
   btn.disabled = false; btn.textContent = "Ajouter l'encaissement";
 });
 
-/* ---------- 5. Remettre le Cash détenu à un copropriétaire ---------- */
-let soldeActuel = 0, remisesRecentes = [];
+/* ---------- 5. Remettre le Cash détenu à un copropriétaire — et corriger une remise ---------- */
+let soldeActuel = 0, mesRemises = [], remiseEnEdition = null;
+async function rafraichirRemises(){
+  try { mesRemises = await rpc("remise_lister", { p_employe_id: employeId, p_code: code }) || []; }
+  catch(e){ mesRemises = []; }
+  dessinerRemises();
+}
 function dessinerSolde(){
-  $("#solde-carte").style.display = soldeActuel > 0 ? "" : "none";
+  const aQuelqueChose = soldeActuel > 0 || mesRemises.length > 0;
+  $("#solde-carte").style.display = aQuelqueChose ? "" : "none";
   $("#solde-montant").textContent = Number(soldeActuel).toFixed(2) + " $";
-  $("#rm-montant").value = soldeActuel > 0 ? Number(soldeActuel).toFixed(2) : "";
+  if (!remiseEnEdition){
+    $("#rm-montant").value = soldeActuel > 0 ? Number(soldeActuel).toFixed(2) : "";
+  }
 }
 function dessinerRemises(){
   const zone = $("#rm-liste");
-  if (!remisesRecentes.length){ zone.innerHTML = ""; return; }
-  zone.innerHTML = '<p class="hint" style="margin-top:0">Remis à l\'instant :</p>' +
-    remisesRecentes.map(r =>
-      '<div class="recente"><span>À ' + esc(r.proprietaire) + '</span><b>' + Number(r.montant).toFixed(2) + ' $</b></div>'
+  if (!mesRemises.length){ zone.innerHTML = ""; return; }
+  zone.innerHTML = '<p class="hint" style="margin-top:0">Vos remises :</p>' +
+    mesRemises.map(r =>
+      '<div class="recente"><span>À ' + esc(r.proprietaire) + '</span>' +
+      '<div class="actions"><b>' + Number(r.montant).toFixed(2) + ' $</b>' +
+      '<button type="button" class="rm-modifier" data-id="' + esc(r.id) + '" aria-label="Modifier">✎</button>' +
+      '<button type="button" class="rm-retirer" data-id="' + esc(r.id) + '" aria-label="Retirer">×</button></div></div>'
     ).join("");
 }
+function annulerEditionRemise(){
+  remiseEnEdition = null;
+  $("#rm-annuler").style.display = "none";
+  $("#rm-transferer").textContent = "J'ai transféré cet argent";
+  $("#rm-proprio").value = "";
+  dessinerSolde();
+}
+$("#rm-annuler").addEventListener("click", annulerEditionRemise);
+$("#rm-liste").addEventListener("click", async e => {
+  const modif = e.target.closest("button.rm-modifier");
+  const retire = e.target.closest("button.rm-retirer");
+  if (modif){
+    const r = mesRemises.find(x => x.id === modif.dataset.id); if (!r) return;
+    remiseEnEdition = r.id;
+    $("#rm-proprio").value = r.proprietaire;
+    $("#rm-montant").value = Number(r.montant).toFixed(2);
+    $("#rm-annuler").style.display = "";
+    $("#rm-transferer").textContent = "Enregistrer la correction";
+    $("#rm-err").classList.remove("show"); $("#rm-ok").classList.remove("show");
+    return;
+  }
+  if (retire){
+    retire.disabled = true;
+    try {
+      const nouveauSolde = await rpc("remise_supprimer", { p_id: retire.dataset.id, p_employe_id: employeId, p_code: code });
+      if (typeof nouveauSolde === "number") soldeActuel = nouveauSolde;
+      if (remiseEnEdition === retire.dataset.id) annulerEditionRemise();
+      await rafraichirRemises();
+      dessinerSolde();
+    } catch(e2){
+      alert(e2.message); retire.disabled = false;
+    }
+  }
+});
 $("#rm-transferer").addEventListener("click", async () => {
   const err = $("#rm-err"), ok = $("#rm-ok");
   err.classList.remove("show"); ok.classList.remove("show");
@@ -440,19 +493,22 @@ $("#rm-transferer").addEventListener("click", async () => {
   if (!proprietaire){ err.textContent = "Choisissez à qui vous avez remis l'argent."; err.classList.add("show"); return; }
   if (!montant || montant <= 0){ err.textContent = "Entrez un montant supérieur à zéro."; err.classList.add("show"); return; }
   const btn = $("#rm-transferer");
+  const enEdition = remiseEnEdition;
   btn.disabled = true; btn.textContent = "Enregistrement…";
   try {
-    const nouveauSolde = await rpc("remise_ajouter", { p_employe_id: employeId, p_code: code, p_proprietaire: proprietaire, p_montant: montant });
-    soldeActuel = typeof nouveauSolde === "number" ? nouveauSolde : Math.max(0, soldeActuel - montant);
-    dessinerSolde();
+    const nouveauSolde = enEdition
+      ? await rpc("remise_modifier", { p_id: enEdition, p_employe_id: employeId, p_code: code, p_proprietaire: proprietaire, p_montant: montant })
+      : await rpc("remise_ajouter", { p_employe_id: employeId, p_code: code, p_proprietaire: proprietaire, p_montant: montant });
+    if (typeof nouveauSolde === "number") soldeActuel = nouveauSolde;
+    ok.textContent = enEdition ? "✓ Remise corrigée." : "✓ Remise enregistrée.";
     ok.classList.add("show");
-    remisesRecentes.unshift({ proprietaire, montant });
-    dessinerRemises();
-    $("#rm-proprio").value = "";
+    if (enEdition) annulerEditionRemise(); else { $("#rm-proprio").value = ""; dessinerSolde(); }
+    await rafraichirRemises();
   } catch(e){
     err.textContent = e.message; err.classList.add("show");
   }
-  btn.disabled = false; btn.textContent = "J'ai transféré cet argent";
+  btn.disabled = false;
+  btn.textContent = remiseEnEdition ? "Enregistrer la correction" : "J'ai transféré cet argent";
 });
 });
 </script>
