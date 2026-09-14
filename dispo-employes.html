@@ -69,7 +69,7 @@
 <body>
 <div class="wrap">
   <h1>Espace employés — Lave-Auto du Parc</h1>
-  <p class="sous">Choisissez votre nom, entrez votre code personnel, puis indiquez vos disponibilités ou ajoutez un encaissement.</p>
+  <p class="sous">Choisissez votre nom, entrez votre code personnel, puis ajoutez un encaissement.</p>
 
   <div class="card" id="carte-connexion">
     <div class="field">
@@ -87,12 +87,15 @@
   <div class="card" id="carte-dispo" style="display:none">
     <p class="salut">Bonjour, <b id="d-nom"></b>.</p>
 
-    <div class="onglets">
-      <button class="onglet actif" id="ong-dispo" type="button">Disponibilités</button>
-      <button class="onglet" id="ong-caisse" type="button">Caisse</button>
+    <!-- Disponibilités temporairement masquées à la demande (à réactiver plus tard :
+         enlever style="display:none" ci-dessous et remettre "onglet actif"/"zone actif"
+         sur #ong-dispo/#zone-dispo au lieu de #ong-caisse/#zone-caisse). -->
+    <div class="onglets" style="display:none">
+      <button class="onglet" id="ong-dispo" type="button">Disponibilités</button>
+      <button class="onglet actif" id="ong-caisse" type="button">Caisse</button>
     </div>
 
-    <div class="zone actif" id="zone-dispo">
+    <div class="zone" id="zone-dispo" style="display:none">
       <p class="hint" style="margin-top:0">Ajoutez une plage horaire où vous êtes disponible.</p>
       <div class="field">
         <label for="d-date">Date</label>
@@ -115,7 +118,7 @@
       <div class="liste" id="d-liste"></div>
     </div>
 
-    <div class="zone" id="zone-caisse">
+    <div class="zone actif" id="zone-caisse">
       <p class="hint" style="margin-top:0">Pour un client qui a payé directement sur place (comptant ou Interac).</p>
       <div class="field">
         <label for="ca-date">Date</label>
@@ -330,7 +333,7 @@ $("#d-deco").addEventListener("click", () => {
   $("#c-code").value = ""; $("#c-nom").value = "";
   $("#carte-dispo").style.display = "none";
   $("#carte-connexion").style.display = "";
-  $("#ong-dispo").click();
+  $("#ong-caisse").click();
 });
 
 /* ---------- 4. Caisse : ajouter un encaissement (pas de lecture — juste l'ajout) ---------- */
