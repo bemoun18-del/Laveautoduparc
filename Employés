@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Espace employés — Lave-Auto du Parc</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root{
+    --nuit:#0b0b0c; --charbon:#141518; --charbon-2:#1b1d21; --ligne:#2a2c31;
+    --txt:#f5f4f2; --gris:#a6a29c; --gris-2:#7e7a74;
+    --acc:#f4761b; --acc-clair:#ff954a; --acc-fonce:#c85a09;
+    --ok:#4cc38a; --rouge:#e0645a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--nuit);color:var(--txt);
+    font-family:"Inter","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    padding:28px 16px 60px;}
+  .wrap{max-width:480px;margin:0 auto}
+  h1{font-size:1.3rem;margin:0 0 4px}
+  .sous{color:var(--gris);font-size:.9rem;margin:0 0 28px}
+  .card{background:var(--charbon);border:1px solid var(--ligne);border-radius:12px;padding:22px;margin-bottom:20px}
+  .field{margin-bottom:16px}
+  .field:last-child{margin-bottom:0}
+  label{display:block;font-size:.78rem;font-weight:650;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--gris);margin-bottom:6px}
+  input,select{width:100%;padding:13px 14px;border-radius:8px;border:1px solid var(--ligne);
+    background:var(--charbon-2);color:var(--txt);font-size:.95rem;font-family:inherit}
+  input:focus,select:focus{outline:2px solid var(--acc);outline-offset:1px}
+  .rangee{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    padding:13px 16px;border-radius:8px;border:0;font-weight:700;font-size:.93rem;cursor:pointer;
+    font-family:inherit;margin-top:16px}
+  .btn-p{background:var(--acc);color:#1a0d02}
+  .btn-p:hover{background:var(--acc-clair)}
+  .btn-p:disabled{opacity:.55;cursor:default}
+  .btn-g{background:var(--charbon-2);color:var(--txt);border:1px solid var(--ligne)}
+  .btn-g:hover{border-color:var(--acc)}
+  .err{display:none;color:var(--rouge);font-size:.85rem;margin-top:10px}
+  .err.show{display:block}
+  .ok{display:none;color:var(--ok);font-size:.85rem;margin-top:10px}
+  .ok.show{display:block}
+  .salut{font-size:1rem;margin:0 0 4px}
+  .salut b{color:var(--acc-clair)}
+  .liste{margin-top:18px}
+  .ligne-dispo{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:11px 0;border-bottom:1px solid var(--ligne)}
+  .ligne-dispo:last-child{border-bottom:0}
+  .ligne-dispo .txt b{font-weight:650}
+  .ligne-dispo .txt span{display:block;color:var(--gris);font-size:.82rem;margin-top:2px}
+  .ligne-dispo button{background:none;border:0;color:var(--rouge);cursor:pointer;font-size:1.2rem;
+    line-height:1;padding:4px 8px;flex-shrink:0}
+  .vide{color:var(--gris);font-size:.87rem;padding:6px 0}
+  .deco{display:block;text-align:center;margin-top:18px;color:var(--gris);font-size:.85rem;
+    text-decoration:underline;cursor:pointer;background:none;border:0;font-family:inherit}
+  .hint{color:var(--gris-2);font-size:.82rem;line-height:1.5;margin-top:14px}
+  .onglets{display:flex;gap:8px;margin-bottom:18px}
+  .onglet{flex:1;padding:10px;border-radius:8px;border:1px solid var(--ligne);background:var(--charbon-2);
+    color:var(--gris);font-weight:650;font-size:.87rem;cursor:pointer;font-family:inherit}
+  .onglet.actif{background:var(--acc);color:#1a0d02;border-color:var(--acc)}
+  .zone{display:none}
+  .zone.actif{display:block}
+  .recente{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;
+    border-bottom:1px solid var(--ligne);font-size:.87rem}
+  .recente:last-child{border-bottom:0}
+  .recente span{color:var(--gris)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Espace employés — Lave-Auto du Parc</h1>
+  <p class="sous">Choisissez votre nom, entrez votre code personnel, puis indiquez vos disponibilités ou ajoutez un encaissement.</p>
+
+  <div class="card" id="carte-connexion">
+    <div class="field">
+      <label for="c-nom">Votre nom</label>
+      <select id="c-nom"><option value="">— Chargement… —</option></select>
+    </div>
+    <div class="field">
+      <label for="c-code">Code personnel</label>
+      <input id="c-code" type="text" inputmode="numeric" placeholder="••••" autocomplete="off">
+    </div>
+    <button class="btn btn-p" id="c-go">Continuer</button>
+    <p class="err" id="c-err"></p>
+  </div>
+
+  <div class="card" id="carte-dispo" style="display:none">
+    <p class="salut">Bonjour, <b id="d-nom"></b>.</p>
+
+    <div class="onglets">
+      <button class="onglet actif" id="ong-dispo" type="button">Disponibilités</button>
+      <button class="onglet" id="ong-caisse" type="button">Caisse</button>
+    </div>
+
+    <div class="zone actif" id="zone-dispo">
+      <p class="hint" style="margin-top:0">Ajoutez une plage horaire où vous êtes disponible.</p>
+      <div class="field">
+        <label for="d-date">Date</label>
+        <input type="date" id="d-date">
+      </div>
+      <div class="rangee">
+        <div class="field">
+          <label for="d-debut">De</label>
+          <input type="time" id="d-debut">
+        </div>
+        <div class="field">
+          <label for="d-fin">À</label>
+          <input type="time" id="d-fin">
+        </div>
+      </div>
+      <button class="btn btn-p" id="d-ajouter">Ajouter cette disponibilité</button>
+      <p class="err" id="d-err"></p>
+      <p class="ok" id="d-ok">✓ Disponibilité ajoutée.</p>
+
+      <div class="liste" id="d-liste"></div>
+    </div>
+
+    <div class="zone" id="zone-caisse">
+      <p class="hint" style="margin-top:0">Pour un client qui a payé directement sur place (comptant ou Interac).</p>
+      <div class="field">
+        <label for="ca-date">Date</label>
+        <input type="date" id="ca-date">
+      </div>
+      <div class="field">
+        <label for="ca-client">Client</label>
+        <input type="text" id="ca-client" placeholder="Nom du client (facultatif)">
+      </div>
+      <div class="field">
+        <label for="ca-service">Service</label>
+        <input type="text" id="ca-service" placeholder="Ex. Super, Deluxe… (facultatif)">
+      </div>
+      <div class="rangee">
+        <div class="field">
+          <label for="ca-montant">Montant ($)</label>
+          <input type="number" id="ca-montant" min="0" step="0.01" placeholder="45">
+        </div>
+        <div class="field">
+          <label for="ca-methode">Méthode</label>
+          <select id="ca-methode"><option>Cash</option><option>Interac</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ca-proprio">Reçu par</label>
+        <select id="ca-proprio"><option value="">— Chargement… —</option></select>
+      </div>
+      <button class="btn btn-p" id="ca-ajouter">Ajouter l'encaissement</button>
+      <p class="err" id="ca-err"></p>
+      <p class="ok" id="ca-ok">✓ Encaissement ajouté.</p>
+
+      <div class="liste" id="ca-liste"></div>
+      <p class="hint">Vous ne pouvez qu'ajouter des encaissements ici — la liste complète et les totaux du mois
+        restent dans l'espace admin.</p>
+    </div>
+
+    <button class="deco" id="d-deco" type="button">Se déconnecter</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+const BACKEND = {
+  url:     "https://ffaqltodrqwjzsnypnzj.supabase.co",
+  anonKey: "sb_publishable_z4w8Jd92KUVwB_584Byu4w_y-0w4bSK"
+};
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const base = BACKEND.url.replace(/\/+$/, "");
+const entetes = extra => Object.assign({ "apikey": BACKEND.anonKey, "Content-Type": "application/json" }, extra || {});
+
+async function rpc(fn, corps){
+  const res = await fetch(base + "/rest/v1/rpc/" + fn, {
+    method: "POST", headers: entetes({ "Prefer":"return=representation" }),
+    body: JSON.stringify(corps)
+  });
+  if (!res.ok){
+    const j = await res.json().catch(() => ({}));
+    const msg = (j && (j.message || j.hint)) || "";
+    if (msg.includes("code_invalide")) throw new Error("Code personnel incorrect.");
+    if (msg.includes("heures_invalides")) throw new Error("L'heure de fin doit être après l'heure de début.");
+    if (msg.includes("date_invalide")) throw new Error("Choisissez une date proche (jusqu'à 60 jours à l'avance, ou jusqu'à 31 jours en arrière pour la caisse).");
+    if (msg.includes("montant_invalide")) throw new Error("Entrez un montant supérieur à zéro.");
+    if (msg.includes("methode_invalide")) throw new Error("Choisissez Cash ou Interac.");
+    if (msg.includes("proprietaire_invalide")) throw new Error("Choisissez qui a reçu ce paiement.");
+    throw new Error("Une erreur est survenue (" + res.status + ").");
+  }
+  return res.json().catch(() => null);
+}
+
+/* ---------- 1. Charger la liste des employés actifs ---------- */
+(async () => {
+  const sel = $("#c-nom");
+  try {
+    const res = await fetch(base + "/rest/v1/employes_public?select=id,nom&order=nom.asc", { headers: entetes() });
+    const liste = await res.json();
+    if (!res.ok || !Array.isArray(liste) || !liste.length){
+      sel.innerHTML = '<option value="">— Aucun employé configuré —</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">— Choisir —</option>' +
+      liste.map(e => '<option value="' + esc(e.id) + '">' + esc(e.nom) + '</option>').join("");
+  } catch(e){
+    sel.innerHTML = '<option value="">— Erreur de connexion —</option>';
+  }
+})();
+
+/* ---------- 1b. Charger les noms « Reçu par » (copropriétaires) ---------- */
+(async () => {
+  const sel = $("#ca-proprio");
+  try {
+    const res = await fetch(base + "/rest/v1/parametres?select=valeur&cle=eq.proprietaires", { headers: entetes() });
+    const j = await res.json();
+    const noms = (res.ok && j && j[0] && Array.isArray(j[0].valeur)) ? j[0].valeur : ["Propriétaire 1","Propriétaire 2"];
+    sel.innerHTML = '<option value="">— Choisir —</option>' + noms.map(n => '<option>' + esc(n) + '</option>').join("");
+  } catch(e){
+    sel.innerHTML = '<option value="">— Erreur de connexion —</option>';
+  }
+})();
+
+/* ---------- 1c. Bascule entre les deux onglets (Disponibilités / Caisse) ---------- */
+$("#ong-dispo").addEventListener("click", () => {
+  $("#ong-dispo").classList.add("actif"); $("#ong-caisse").classList.remove("actif");
+  $("#zone-dispo").classList.add("actif"); $("#zone-caisse").classList.remove("actif");
+});
+$("#ong-caisse").addEventListener("click", () => {
+  $("#ong-caisse").classList.add("actif"); $("#ong-dispo").classList.remove("actif");
+  $("#zone-caisse").classList.add("actif"); $("#zone-dispo").classList.remove("actif");
+});
+
+/* ---------- 2. « Connexion » = un premier appel à dispo_lister,
+   qui vérifie le code ET renvoie les disponibilités déjà envoyées. ---------- */
+let employeId = "", code = "", nomEmploye = "";
+
+async function connecter(){
+  const err = $("#c-err");
+  err.classList.remove("show");
+  const sel = $("#c-nom");
+  employeId = sel.value;
+  code = $("#c-code").value.trim();
+  nomEmploye = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].textContent : "";
+  if (!employeId){ err.textContent = "Choisissez votre nom."; err.classList.add("show"); return; }
+  if (!code){ err.textContent = "Entrez votre code personnel."; err.classList.add("show"); return; }
+  const btn = $("#c-go");
+  btn.disabled = true; btn.textContent = "Connexion…";
+  try {
+    const dispos = await rpc("dispo_lister", { p_employe_id: employeId, p_code: code });
+    $("#carte-connexion").style.display = "none";
+    $("#carte-dispo").style.display = "";
+    $("#d-nom").textContent = nomEmploye;
+    const auj = new Date(); auj.setHours(12,0,0,0);
+    $("#d-date").min = auj.toISOString().slice(0,10);
+    const max = new Date(auj); max.setDate(max.getDate() + 60);
+    $("#d-date").max = max.toISOString().slice(0,10);
+    $("#d-date").value = auj.toISOString().slice(0,10);
+    dessinerListe(dispos || []);
+    const min31 = new Date(auj); min31.setDate(min31.getDate() - 31);
+    $("#ca-date").min = min31.toISOString().slice(0,10);
+    $("#ca-date").max = auj.toISOString().slice(0,10);
+    $("#ca-date").value = auj.toISOString().slice(0,10);
+    ajoutsRecents = [];
+    dessinerRecents();
+  } catch(e){
+    err.textContent = e.message; err.classList.add("show");
+  }
+  btn.disabled = false; btn.textContent = "Continuer";
+}
+$("#c-go").addEventListener("click", connecter);
+$("#c-code").addEventListener("keydown", e => { if (e.key === "Enter") connecter(); });
+
+/* ---------- 3. Une fois connecté : ajouter / lister / retirer ---------- */
+function fmtHeure(t){ return String(t || "").slice(0,5); }
+function fmtDate(iso){
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString("fr-CA", { weekday:"short", day:"numeric", month:"short", year:"numeric" });
+}
+function dessinerListe(dispos){
+  const zone = $("#d-liste");
+  if (!dispos.length){
+    zone.innerHTML = '<p class="vide">Aucune disponibilité envoyée pour l\'instant.</p>';
+    return;
+  }
+  const triees = dispos.slice().sort((a,b) => (a.date + a.heure_debut).localeCompare(b.date + b.heure_debut));
+  zone.innerHTML = triees.map(d =>
+    '<div class="ligne-dispo"><div class="txt"><b>' + esc(fmtDate(d.date)) + '</b>' +
+    '<span>' + esc(fmtHeure(d.heure_debut)) + ' à ' + esc(fmtHeure(d.heure_fin)) + '</span></div>' +
+    '<button type="button" data-id="' + esc(d.id) + '" aria-label="Retirer">×</button></div>'
+  ).join("");
+}
+async function rafraichirListe(){
+  const dispos = await rpc("dispo_lister", { p_employe_id: employeId, p_code: code });
+  dessinerListe(dispos || []);
+}
+
+$("#d-ajouter").addEventListener("click", async () => {
+  const err = $("#d-err"), ok = $("#d-ok");
+  err.classList.remove("show"); ok.classList.remove("show");
+  const date = $("#d-date").value, debut = $("#d-debut").value, fin = $("#d-fin").value;
+  if (!date || !debut || !fin){
+    err.textContent = "Remplissez la date et les deux heures."; err.classList.add("show"); return;
+  }
+  if (fin <= debut){
+    err.textContent = "L'heure de fin doit être après l'heure de début."; err.classList.add("show"); return;
+  }
+  const btn = $("#d-ajouter");
+  btn.disabled = true; btn.textContent = "Ajout…";
+  try {
+    await rpc("dispo_ajouter", { p_employe_id: employeId, p_code: code, p_date: date, p_heure_debut: debut, p_heure_fin: fin });
+    ok.classList.add("show");
+    $("#d-debut").value = ""; $("#d-fin").value = "";
+    await rafraichirListe();
+  } catch(e){
+    err.textContent = e.message; err.classList.add("show");
+  }
+  btn.disabled = false; btn.textContent = "Ajouter cette disponibilité";
+});
+
+$("#d-liste").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-id]"); if (!b) return;
+  b.disabled = true;
+  try {
+    await rpc("dispo_supprimer", { p_id: b.dataset.id, p_employe_id: employeId, p_code: code });
+    await rafraichirListe();
+  } catch(e2){
+    alert(e2.message);
+    b.disabled = false;
+  }
+});
+
+$("#d-deco").addEventListener("click", () => {
+  employeId = ""; code = ""; nomEmploye = ""; ajoutsRecents = [];
+  $("#c-code").value = ""; $("#c-nom").value = "";
+  $("#carte-dispo").style.display = "none";
+  $("#carte-connexion").style.display = "";
+  $("#ong-dispo").click();
+});
+
+/* ---------- 4. Caisse : ajouter un encaissement (pas de lecture — juste l'ajout) ---------- */
+let ajoutsRecents = [];
+function dessinerRecents(){
+  const zone = $("#ca-liste");
+  if (!ajoutsRecents.length){ zone.innerHTML = ""; return; }
+  zone.innerHTML = '<p class="hint" style="margin-top:0">Ajoutés à l\'instant :</p>' +
+    ajoutsRecents.map(c =>
+      '<div class="recente"><span>' + esc(c.date) + (c.client ? " · " + esc(c.client) : "") + " · " + esc(c.methode) + '</span>' +
+      '<b>' + Number(c.montant).toFixed(2) + ' $</b></div>'
+    ).join("");
+}
+$("#ca-ajouter").addEventListener("click", async () => {
+  const err = $("#ca-err"), ok = $("#ca-ok");
+  err.classList.remove("show"); ok.classList.remove("show");
+  const date = $("#ca-date").value;
+  const client = $("#ca-client").value.trim();
+  const service = $("#ca-service").value.trim();
+  const montant = Number($("#ca-montant").value);
+  const methode = $("#ca-methode").value;
+  const proprietaire = $("#ca-proprio").value;
+  if (!date){ err.textContent = "Choisissez une date."; err.classList.add("show"); return; }
+  if (!montant || montant <= 0){ err.textContent = "Entrez un montant supérieur à zéro."; err.classList.add("show"); return; }
+  if (!proprietaire){ err.textContent = "Choisissez qui a reçu ce paiement."; err.classList.add("show"); return; }
+  const btn = $("#ca-ajouter");
+  btn.disabled = true; btn.textContent = "Ajout…";
+  try {
+    await rpc("caisse_ajouter", {
+      p_employe_id: employeId, p_code: code, p_date: date,
+      p_client: client || null, p_service: service || null,
+      p_montant: montant, p_methode: methode, p_proprietaire: proprietaire
+    });
+    ok.classList.add("show");
+    ajoutsRecents.unshift({ date, client, montant, methode });
+    dessinerRecents();
+    $("#ca-client").value = ""; $("#ca-service").value = ""; $("#ca-montant").value = "";
+  } catch(e){
+    err.textContent = e.message; err.classList.add("show");
+  }
+  btn.disabled = false; btn.textContent = "Ajouter l'encaissement";
+});
+});
+</script>
+</body>
+</html>
