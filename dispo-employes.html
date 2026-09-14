@@ -64,6 +64,8 @@
     border-bottom:1px solid var(--ligne);font-size:.87rem}
   .recente:last-child{border-bottom:0}
   .recente span{color:var(--gris)}
+  .solde{background:var(--charbon-2);border:1px solid var(--ligne);border-radius:10px;padding:16px;margin-bottom:20px}
+  .solde-montant{font-size:1.6rem;font-weight:750;color:var(--acc-clair);margin:0}
 </style>
 </head>
 <body>
@@ -119,6 +121,25 @@
     </div>
 
     <div class="zone actif" id="zone-caisse">
+      <div class="solde" id="solde-carte" style="display:none">
+        <p class="hint" style="margin:0 0 4px">Vous détenez actuellement (Cash non remis) :</p>
+        <p class="solde-montant" id="solde-montant">0,00 $</p>
+        <div class="rangee" style="margin-top:12px">
+          <div class="field">
+            <label for="rm-proprio">Remettre à</label>
+            <select id="rm-proprio"><option value="">— Choisir —</option></select>
+          </div>
+          <div class="field">
+            <label for="rm-montant">Montant ($)</label>
+            <input type="number" id="rm-montant" min="0" step="0.01" placeholder="45">
+          </div>
+        </div>
+        <button class="btn btn-g" id="rm-transferer" type="button">J'ai transféré cet argent</button>
+        <p class="err" id="rm-err"></p>
+        <p class="ok" id="rm-ok">✓ Remise enregistrée.</p>
+        <div class="liste" id="rm-liste"></div>
+      </div>
+
       <p class="hint" style="margin-top:0">Pour un client qui a payé directement sur place (comptant ou Interac).</p>
       <div class="field">
         <label for="ca-date">Date</label>
@@ -142,10 +163,12 @@
           <select id="ca-methode"><option>Cash</option><option>Interac</option></select>
         </div>
       </div>
-      <div class="field">
+      <div class="field" id="ca-proprio-champ" style="display:none">
         <label for="ca-proprio">Reçu par</label>
         <select id="ca-proprio"><option value="">— Chargement… —</option></select>
       </div>
+      <p class="hint" id="ca-cash-note" style="margin-top:0">Un Cash reste « à vous » jusqu'à ce que vous le
+        remettiez à un propriétaire ci-dessus, une fois ajouté.</p>
       <button class="btn btn-p" id="ca-ajouter">Ajouter l'encaissement</button>
       <p class="err" id="ca-err"></p>
       <p class="ok" id="ca-ok">✓ Encaissement ajouté.</p>
@@ -183,7 +206,7 @@ async function rpc(fn, corps){
     if (msg.includes("date_invalide")) throw new Error("Choisissez une date proche (jusqu'à 60 jours à l'avance, ou jusqu'à 31 jours en arrière pour la caisse).");
     if (msg.includes("montant_invalide")) throw new Error("Entrez un montant supérieur à zéro.");
     if (msg.includes("methode_invalide")) throw new Error("Choisissez Cash ou Interac.");
-    if (msg.includes("proprietaire_invalide")) throw new Error("Choisissez qui a reçu ce paiement.");
+    if (msg.includes("proprietaire_invalide")) throw new Error("Choisissez un propriétaire.");
     throw new Error("Une erreur est survenue (" + res.status + ").");
   }
   return res.json().catch(() => null);
@@ -206,16 +229,18 @@ async function rpc(fn, corps){
   }
 })();
 
-/* ---------- 1b. Charger les noms « Reçu par » (copropriétaires) ---------- */
+/* ---------- 1b. Charger les noms des copropriétaires (« Reçu par » et « Remettre à ») ---------- */
 (async () => {
-  const sel = $("#ca-proprio");
   try {
     const res = await fetch(base + "/rest/v1/parametres?select=valeur&cle=eq.proprietaires", { headers: entetes() });
     const j = await res.json();
     const noms = (res.ok && j && j[0] && Array.isArray(j[0].valeur)) ? j[0].valeur : ["Propriétaire 1","Propriétaire 2"];
-    sel.innerHTML = '<option value="">— Choisir —</option>' + noms.map(n => '<option>' + esc(n) + '</option>').join("");
+    const html = '<option value="">— Choisir —</option>' + noms.map(n => '<option>' + esc(n) + '</option>').join("");
+    $("#ca-proprio").innerHTML = html;
+    $("#rm-proprio").innerHTML = html;
   } catch(e){
-    sel.innerHTML = '<option value="">— Erreur de connexion —</option>';
+    $("#ca-proprio").innerHTML = '<option value="">— Erreur de connexion —</option>';
+    $("#rm-proprio").innerHTML = '<option value="">— Erreur de connexion —</option>';
   }
 })();
 
@@ -228,6 +253,15 @@ $("#ong-caisse").addEventListener("click", () => {
   $("#ong-caisse").classList.add("actif"); $("#ong-dispo").classList.remove("actif");
   $("#zone-caisse").classList.add("actif"); $("#zone-dispo").classList.remove("actif");
 });
+
+/* ---------- 1d. Un Interac demande "Reçu par" tout de suite ; un Cash reste détenu ---------- */
+function majChampMethode(){
+  const interac = $("#ca-methode").value === "Interac";
+  $("#ca-proprio-champ").style.display = interac ? "" : "none";
+  $("#ca-cash-note").style.display = interac ? "none" : "";
+}
+$("#ca-methode").addEventListener("change", majChampMethode);
+majChampMethode();
 
 /* ---------- 2. « Connexion » = un premier appel à dispo_lister,
    qui vérifie le code ET renvoie les disponibilités déjà envoyées. ---------- */
@@ -259,8 +293,12 @@ async function connecter(){
     $("#ca-date").min = min31.toISOString().slice(0,10);
     $("#ca-date").max = auj.toISOString().slice(0,10);
     $("#ca-date").value = auj.toISOString().slice(0,10);
-    ajoutsRecents = [];
-    dessinerRecents();
+    ajoutsRecents = []; remisesRecentes = [];
+    dessinerRecents(); dessinerRemises();
+    try {
+      soldeActuel = await rpc("caisse_solde", { p_employe_id: employeId, p_code: code });
+      dessinerSolde();
+    } catch(e2){ /* pas bloquant : le formulaire d'ajout reste utilisable */ }
   } catch(e){
     err.textContent = e.message; err.classList.add("show");
   }
@@ -329,7 +367,7 @@ $("#d-liste").addEventListener("click", async e => {
 });
 
 $("#d-deco").addEventListener("click", () => {
-  employeId = ""; code = ""; nomEmploye = ""; ajoutsRecents = [];
+  employeId = ""; code = ""; nomEmploye = ""; ajoutsRecents = []; remisesRecentes = []; soldeActuel = 0;
   $("#c-code").value = ""; $("#c-nom").value = "";
   $("#carte-dispo").style.display = "none";
   $("#carte-connexion").style.display = "";
@@ -355,18 +393,20 @@ $("#ca-ajouter").addEventListener("click", async () => {
   const service = $("#ca-service").value.trim();
   const montant = Number($("#ca-montant").value);
   const methode = $("#ca-methode").value;
-  const proprietaire = $("#ca-proprio").value;
+  const interac = methode === "Interac";
+  const proprietaire = interac ? $("#ca-proprio").value : null;
   if (!date){ err.textContent = "Choisissez une date."; err.classList.add("show"); return; }
   if (!montant || montant <= 0){ err.textContent = "Entrez un montant supérieur à zéro."; err.classList.add("show"); return; }
-  if (!proprietaire){ err.textContent = "Choisissez qui a reçu ce paiement."; err.classList.add("show"); return; }
+  if (interac && !proprietaire){ err.textContent = "Choisissez qui a reçu ce paiement."; err.classList.add("show"); return; }
   const btn = $("#ca-ajouter");
   btn.disabled = true; btn.textContent = "Ajout…";
   try {
-    await rpc("caisse_ajouter", {
+    const nouveauSolde = await rpc("caisse_ajouter", {
       p_employe_id: employeId, p_code: code, p_date: date,
       p_client: client || null, p_service: service || null,
       p_montant: montant, p_methode: methode, p_proprietaire: proprietaire
     });
+    if (typeof nouveauSolde === "number"){ soldeActuel = nouveauSolde; dessinerSolde(); }
     ok.classList.add("show");
     ajoutsRecents.unshift({ date, client, montant, methode });
     dessinerRecents();
@@ -375,6 +415,44 @@ $("#ca-ajouter").addEventListener("click", async () => {
     err.textContent = e.message; err.classList.add("show");
   }
   btn.disabled = false; btn.textContent = "Ajouter l'encaissement";
+});
+
+/* ---------- 5. Remettre le Cash détenu à un copropriétaire ---------- */
+let soldeActuel = 0, remisesRecentes = [];
+function dessinerSolde(){
+  $("#solde-carte").style.display = soldeActuel > 0 ? "" : "none";
+  $("#solde-montant").textContent = Number(soldeActuel).toFixed(2) + " $";
+  $("#rm-montant").value = soldeActuel > 0 ? Number(soldeActuel).toFixed(2) : "";
+}
+function dessinerRemises(){
+  const zone = $("#rm-liste");
+  if (!remisesRecentes.length){ zone.innerHTML = ""; return; }
+  zone.innerHTML = '<p class="hint" style="margin-top:0">Remis à l\'instant :</p>' +
+    remisesRecentes.map(r =>
+      '<div class="recente"><span>À ' + esc(r.proprietaire) + '</span><b>' + Number(r.montant).toFixed(2) + ' $</b></div>'
+    ).join("");
+}
+$("#rm-transferer").addEventListener("click", async () => {
+  const err = $("#rm-err"), ok = $("#rm-ok");
+  err.classList.remove("show"); ok.classList.remove("show");
+  const proprietaire = $("#rm-proprio").value;
+  const montant = Number($("#rm-montant").value);
+  if (!proprietaire){ err.textContent = "Choisissez à qui vous avez remis l'argent."; err.classList.add("show"); return; }
+  if (!montant || montant <= 0){ err.textContent = "Entrez un montant supérieur à zéro."; err.classList.add("show"); return; }
+  const btn = $("#rm-transferer");
+  btn.disabled = true; btn.textContent = "Enregistrement…";
+  try {
+    const nouveauSolde = await rpc("remise_ajouter", { p_employe_id: employeId, p_code: code, p_proprietaire: proprietaire, p_montant: montant });
+    soldeActuel = typeof nouveauSolde === "number" ? nouveauSolde : Math.max(0, soldeActuel - montant);
+    dessinerSolde();
+    ok.classList.add("show");
+    remisesRecentes.unshift({ proprietaire, montant });
+    dessinerRemises();
+    $("#rm-proprio").value = "";
+  } catch(e){
+    err.textContent = e.message; err.classList.add("show");
+  }
+  btn.disabled = false; btn.textContent = "J'ai transféré cet argent";
 });
 });
 </script>
