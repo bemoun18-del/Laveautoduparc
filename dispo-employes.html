@@ -415,6 +415,7 @@ $("#ca-ajouter").addEventListener("click", async () => {
       p_montant: montant, p_methode: methode, p_proprietaire: proprietaire
     });
     if (typeof nouveauSolde === "number"){ soldeActuel = nouveauSolde; dessinerSolde(); }
+    await rafraichirSolde();
     ok.classList.add("show");
     ajoutsRecents.unshift({ date, client, montant, methode });
     dessinerRecents();
@@ -431,6 +432,17 @@ async function rafraichirRemises(){
   try { mesRemises = await rpc("remise_lister", { p_employe_id: employeId, p_code: code }) || []; }
   catch(e){ mesRemises = []; }
   dessinerRemises();
+}
+/* Toujours redemander le vrai solde au serveur après une action qui le change,
+   plutôt que de se fier uniquement à la valeur renvoyée par chaque appel RPC
+   (caisse_ajouter / remise_ajouter / remise_modifier / remise_supprimer) :
+   si cette valeur n'arrive pas sous la forme attendue (nombre), l'affichage
+   restait figé sur l'ancien solde même quand l'action avait bien réussi
+   côté serveur — c'est ce qui faisait croire que "rien ne se passe". */
+async function rafraichirSolde(){
+  try { soldeActuel = await rpc("caisse_solde", { p_employe_id: employeId, p_code: code }); }
+  catch(e){ /* le solde affiché reste celui qu'on avait déjà — pas bloquant */ }
+  dessinerSolde();
 }
 function dessinerSolde(){
   const aQuelqueChose = soldeActuel > 0 || mesRemises.length > 0;
@@ -479,7 +491,7 @@ $("#rm-liste").addEventListener("click", async e => {
       if (typeof nouveauSolde === "number") soldeActuel = nouveauSolde;
       if (remiseEnEdition === retire.dataset.id) annulerEditionRemise();
       await rafraichirRemises();
-      dessinerSolde();
+      await rafraichirSolde();
     } catch(e2){
       alert(e2.message); retire.disabled = false;
     }
@@ -504,6 +516,7 @@ $("#rm-transferer").addEventListener("click", async () => {
     ok.classList.add("show");
     if (enEdition) annulerEditionRemise(); else { $("#rm-proprio").value = ""; dessinerSolde(); }
     await rafraichirRemises();
+    await rafraichirSolde();
   } catch(e){
     err.textContent = e.message; err.classList.add("show");
   }
