@@ -2612,33 +2612,6 @@ const Resa = {
 /* ---------- statistiques : début de réservation (1re interaction) ---------- */
 $("#form").addEventListener("input", () => AN.reservationDebutee(), { once: true });
 
-/* ---------- paiement en ligne (Stripe) ----------
-   Envoie les détails de la réservation à la fonction serveur
-   functions/api/create-checkout.js, qui recalcule le prix elle-même
-   (jamais confiance au prix du navigateur) et renvoie l'URL de la page
-   de paiement Stripe. On garde une copie des détails dans sessionStorage
-   pour pouvoir afficher un récapitulatif au retour, une fois payé. */
-async function demarrerPaiementStripe(d, clesExtras){
-  try {
-    const res = await fetch("/api/create-checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nom: d.nom, tel: d.tel, service: d.service, taille: d.taille,
-        date: d.date, heure: d.heure, vehicule: d.vehicule, notes: d.notes,
-        extras: clesExtras, code_promo: d.code_promo || ""
-      })
-    });
-    const j = await res.json().catch(() => null);
-    if (!res.ok || !j || !j.url) throw new Error((j && j.error) || "Erreur de paiement.");
-    try { sessionStorage.setItem("ldp_resa_attente", JSON.stringify(d)); } catch(e){ /* pas grave */ }
-    location.href = j.url;
-    return true;
-  } catch(e){
-    return false;
-  }
-}
-
 /* ---------- soumission du formulaire ---------- */
 $("#form").addEventListener("submit", async e => {
   e.preventDefault();
@@ -2713,23 +2686,6 @@ $("#form").addEventListener("submit", async e => {
     d.code_promo = promoAppliquee.code;
   }
   d.prix = sousTotal - rabais;
-
-  /* Paiement en ligne obligatoire (Stripe) quand la base de données est
-     branchée : le client paie le montant complet avant que la réservation
-     n'existe. La réservation elle-même n'est créée qu'une fois le paiement
-     confirmé, côté serveur (voir functions/api/stripe-webhook.js) — jamais
-     depuis le navigateur, qui pourrait fermer l'onglet ou couper sa
-     connexion avant la fin. */
-  if (Resa.mode() === "supabase"){
-    const ok = await demarrerPaiementStripe(d, clesExtras);
-    if (ok) return; /* la page quitte pour Stripe — rien d'autre à faire ici */
-    bouton.disabled = false; bouton.textContent = "Confirmer ma demande";
-    eg.textContent = L(
-      "Le paiement en ligne est momentanément indisponible. Réessayez dans un instant, ou contactez-nous directement.",
-      "Online payment is temporarily unavailable. Please try again shortly, or contact us directly.");
-    eg.classList.add("show");
-    return;
-  }
 
   let res = {ok:false, distant:false};
   try { res = await Resa.creer(d); } catch(err){ res = {ok:false}; }
@@ -2875,85 +2831,6 @@ $("#resa-fermer").addEventListener("click", fermerReservation);
 $("#reservation").addEventListener("click", e => { if (e.target.id === "reservation") fermerReservation(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && $("#reservation").classList.contains("show")) fermerReservation(); });
 if (location.hash === "#reservation") ouvrirReservation();
-
-/* ---------- retour depuis la page de paiement Stripe ----------
-   Stripe ramène le client sur le site avec ?paiement=succes ou
-   ?paiement=annule dans l'adresse. La réservation elle-même a déjà été
-   enregistrée par stripe-webhook.js (ou pas du tout, si annulé) — ici on
-   se contente d'afficher le bon écran, à partir de la copie locale des
-   détails gardée avant la redirection vers Stripe. */
-function gererRetourPaiement(){
-  const params = new URLSearchParams(location.search);
-  const paiement = params.get("paiement");
-  if (paiement !== "succes" && paiement !== "annule") return;
-
-  let d = null;
-  try { d = JSON.parse(sessionStorage.getItem("ldp_resa_attente") || "null"); } catch(e){}
-
-  /* Nettoie l'adresse pour qu'un rafraîchissement de la page ne rejoue pas
-     ce même écran de retour. */
-  history.replaceState(null, "", location.pathname + location.hash);
-
-  if (paiement === "succes"){
-    if (typeof gtag === "function" && d){
-      try {
-        gtag("event", "reservation_envoyee", { currency:"CAD", value:d.prix, forfait:d.service, taille:d.taille });
-      } catch(e){ /* sans effet */ }
-    }
-    if (d) AN.reservationCompletee(d);
-    try { sessionStorage.removeItem("ldp_resa_attente"); } catch(e){}
-
-    ouvrirReservation();
-    $("#form").style.display = "none";
-    $("#recap").classList.add("ok");
-    $("#recap").classList.add("show");
-    $("#recap-titre").textContent = L("C'est payé et réservé — merci !","Paid and booked — thank you!");
-    const reference = (params.get("session_id") || "").replace(/^cs_(test_|live_)?/, "").slice(0, 10).toUpperCase();
-    if (d){
-      const dateLisible = new Date(d.date + "T12:00:00")
-        .toLocaleDateString(L("fr-CA","en-CA"), {weekday:"long", day:"numeric", month:"long", year:"numeric"});
-      $("#recap-dl").innerHTML = [
-        [L("Forfait","Package"), d.service],
-        [L("Véhicule","Vehicle"), tailleAff(d.taille) + (d.vehicule ? " · " + d.vehicule : "")],
-        [L("Prix payé","Amount paid"), d.prix + L(" $ + taxes"," $ + tax")],
-        [L("Date","Date"), dateLisible], [L("Heure","Time"), fmt(d.heure)],
-        [L("Nom","Name"), d.nom], [L("Téléphone","Phone"), d.tel]
-      ].filter(Boolean).map(r => "<dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd>").join("");
-    } else {
-      $("#recap-dl").innerHTML = "";
-    }
-    $("#recap-note").innerHTML = L(
-      "Votre paiement a été reçu, votre réservation est confirmée.<br>Référence de paiement : ",
-      "Your payment was received, your booking is confirmed.<br>Payment reference: ") +
-      "<b>" + esc(reference || "—") + "</b>";
-    $("#send-sms-tels").innerHTML = "";
-    $("#send-mail").style.display = "none";
-    $("#send-again").textContent = L("Faire une autre réservation","Make another booking");
-  } else {
-    /* Annulé sur la page Stripe : rien n'a été débité, rien n'a été
-       enregistré. On rouvre le formulaire, avec les champs déjà remplis
-       si on les a encore, pour éviter au client de tout retaper. */
-    ouvrirReservation();
-    if (d){
-      try {
-        if ($("#f-nom")) $("#f-nom").value = d.nom || "";
-        if ($("#f-tel")) $("#f-tel").value = d.tel || "";
-        if ($("#f-service")) $("#f-service").value = d.service || "";
-        if ($("#f-taille")) $("#f-taille").value = d.taille || "";
-        if ($("#f-vehicule")) $("#f-vehicule").value = d.vehicule || "";
-        if ($("#f-notes")) $("#f-notes").value = d.notes || "";
-        if ($("#f-date") && d.date){ $("#f-date").value = d.date; creneaux(); }
-        if ($("#f-heure") && d.heure) $("#f-heure").value = d.heure;
-        majTotal();
-      } catch(e){ /* si un champ ne se remplit pas, tant pis */ }
-    }
-    const eg = $("#e-global");
-    eg.textContent = L(
-      "Le paiement a été annulé — rien n'a été débité. Vous pouvez réessayer quand vous voulez.",
-      "Payment was cancelled — nothing was charged. You can try again whenever you're ready.");
-    eg.classList.add("show");
-  }
-}
 
 /* Suivi Google Analytics des clics sur un numéro de téléphone (topbar,
    pied de page, bouton d'appel du bas d'écran, etc.) — un seul écouteur
@@ -3892,7 +3769,6 @@ rendreStatut();
 creneaux();
 majLdJson();
 rendreFermBandeau();
-gererRetourPaiement();
 setInterval(rendreStatut, 60000);
 
 /* Heures, fermetures et promotions : celles écrites ci-dessus servent tant
