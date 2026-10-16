@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://laveautoduparc.ca/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://laveautoduparc.ca/lave-auto-montreal</loc>
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://laveautoduparc.ca/lave-auto-montreal"/>
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://laveautoduparc.ca/hand-car-wash-montreal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://laveautoduparc.ca/lave-auto-montreal"/>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://laveautoduparc.ca/detailing-auto-montreal</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://laveautoduparc.ca/phares-et-hydrophobe-montreal</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://laveautoduparc.ca/lavage-auto-hiver-montreal</loc>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://laveautoduparc.ca/hand-car-wash-montreal</loc>
+    <xhtml:link rel="alternate" hreflang="fr-CA" href="https://laveautoduparc.ca/lave-auto-montreal"/>
+    <xhtml:link rel="alternate" hreflang="en-CA" href="https://laveautoduparc.ca/hand-car-wash-montreal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://laveautoduparc.ca/lave-auto-montreal"/>
+    <lastmod>2026-10-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+</urlset>
