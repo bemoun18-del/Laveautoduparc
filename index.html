@@ -3033,17 +3033,7 @@ let statsJours = 7;
 let statsChargees = false;
 const statsGraphes = {};
 
-function chargerChartJs(){
-  if (window.Chart) return Promise.resolve();
-  if (chargerChartJs._p) return chargerChartJs._p;
-  chargerChartJs._p = new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js";
-    s.onload = resolve; s.onerror = reject;
-    document.head.appendChild(s);
-  });
-  return chargerChartJs._p;
-}
+function chargerChartJs(){ return Promise.resolve(); }
 
 async function listerEvenements(token, depuisIso){
   const params = "select=*&cree=gte." + encodeURIComponent(depuisIso) + "&order=cree.asc&limit=10000";
@@ -3090,8 +3080,81 @@ async function chargerStats(forcer){
 function graphique(id, config){
   const canvas = $("#" + id);
   if (!canvas) return;
-  if (statsGraphes[id]){ statsGraphes[id].destroy(); }
-  statsGraphes[id] = new Chart(canvas.getContext("2d"), config);
+  const dpr = window.devicePixelRatio || 1;
+  const W = Math.max(240, (canvas.parentElement.clientWidth || 300) - 32), H = 220;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  const c = canvas.getContext("2d");
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.clearRect(0, 0, W, H);
+  const TXT = "#a9a9a9", GRILLE = "rgba(255,255,255,.09)";
+  c.font = "11px system-ui, -apple-system, sans-serif";
+  const labels = config.data.labels || [];
+  const ds = config.data.datasets[0];
+  const vals = ds.data.map(Number);
+  const total = vals.reduce((a, b) => a + b, 0);
+  const aucune = () => { c.fillStyle = TXT; c.textAlign = "center"; c.textBaseline = "middle";
+    c.fillText("Aucune donnée", W / 2, H / 2); };
+
+  if (config.type === "doughnut"){
+    const cx = W / 2, cy = 88, R = 74, r = 46;
+    if (!total){ aucune(); return; }
+    const couleurs = ds.backgroundColor;
+    let a0 = -Math.PI / 2;
+    vals.forEach((v, i) => {
+      if (!v) return;
+      const a1 = a0 + v / total * Math.PI * 2;
+      c.beginPath(); c.arc(cx, cy, R, a0, a1); c.arc(cx, cy, r, a1, a0, true); c.closePath();
+      c.fillStyle = couleurs[i]; c.fill(); a0 = a1;
+    });
+    c.textBaseline = "middle"; c.textAlign = "left";
+    const larg = labels.map((l, i) => c.measureText(l + " " + Math.round(vals[i] / total * 100) + " %").width + 20);
+    let x = (W - larg.reduce((a, b) => a + b, 0)) / 2;
+    labels.forEach((l, i) => {
+      c.fillStyle = couleurs[i]; c.fillRect(x, 196, 10, 10);
+      c.fillStyle = TXT; c.fillText(l + " " + Math.round(vals[i] / total * 100) + " %", x + 15, 201);
+      x += larg[i];
+    });
+    return;
+  }
+
+  const G = 34, D = 8, T = 10, B = 26;
+  const pw = W - G - D, ph = H - T - B;
+  if (!labels.length || !total){ aucune(); return; }
+  const n = Math.min(4, Math.max(1, Math.ceil(Math.max.apply(null, vals))));
+  const pas = Math.ceil(Math.max.apply(null, vals) / n) || 1;
+  const ymax = pas * n;
+  const Y = v => T + ph - v / ymax * ph;
+  c.textAlign = "right"; c.textBaseline = "middle";
+  for (let i = 0; i <= n; i++){
+    const y = Y(i * pas);
+    c.strokeStyle = GRILLE; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(G, y); c.lineTo(W - D, y); c.stroke();
+    c.fillStyle = TXT; c.fillText(String(i * pas), G - 6, y);
+  }
+  const m = labels.length, bande = pw / m;
+  const saut = Math.max(1, Math.ceil(m / Math.max(1, Math.floor(pw / 46))));
+  c.textAlign = "center"; c.textBaseline = "top"; c.fillStyle = TXT;
+  labels.forEach((l, i) => {
+    if (i % saut) return;
+    const t = /^\d{4}-\d{2}-\d{2}$/.test(l) ? l.slice(5) : l;
+    c.fillText(t, G + bande * (i + 0.5), H - B + 8);
+  });
+  const couleur = ds.borderColor || ds.backgroundColor;
+  if (config.type === "line"){
+    c.beginPath();
+    vals.forEach((v, i) => { const x = G + bande * (i + 0.5), y = Y(v); i ? c.lineTo(x, y) : c.moveTo(x, y); });
+    c.strokeStyle = couleur; c.lineWidth = 2; c.stroke();
+    c.lineTo(G + bande * (m - 0.5), Y(0)); c.lineTo(G + bande * 0.5, Y(0)); c.closePath();
+    c.fillStyle = ds.backgroundColor; c.fill();
+    if (m <= 45){ c.fillStyle = couleur;
+      vals.forEach((v, i) => { c.beginPath(); c.arc(G + bande * (i + 0.5), Y(v), 3, 0, 7); c.fill(); }); }
+  } else {
+    const bw = Math.min(46, bande * 0.7);
+    c.fillStyle = couleur;
+    vals.forEach((v, i) => { const h = v / ymax * ph;
+      c.fillRect(G + bande * (i + 0.5) - bw / 2, Y(0) - h, bw, h); });
+  }
 }
 
 function rendreStats(evts){
