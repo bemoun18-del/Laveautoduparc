@@ -156,7 +156,7 @@ async function creerPaiement(request, env){
         unit_amount: Math.round(total * 100),
         product_data: {
           name: nomProduit.slice(0, 250),
-          description: (anglais ? "Taxes (GST/QST) are settled on site." : "Taxes (TPS/TVQ) à régler sur place.")
+          description: "Lave-Auto du Parc"
         }
       }
     }],
@@ -213,7 +213,7 @@ async function notifier(r){
     const dateCourte = new Date(r.date + "T12:00:00").toLocaleDateString("fr-CA",
       { weekday: "short", day: "numeric", month: "short" });
     const lignes = [
-      "💳 PAYÉ EN LIGNE (taxes à régler sur place)",
+      "💳 PAYÉ EN LIGNE",
       "👤 " + r.nom + "  ·  " + r.tel,
       "📅 " + dateLisible + "  à  " + r.heure,
       "🧽 " + r.service + "  ·  " + r.prix + " $",
