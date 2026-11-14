@@ -3074,7 +3074,8 @@ function rendreTable(){
       '<td>' + esc(r.nom) + '</td>' +
       '<td><a href="tel:' + esc((r.tel||"").replace(/\s/g,"")) + '" style="color:var(--acc-clair)">' + esc(r.tel) + '</a></td>' +
       '<td>' + esc(r.service) + (r.extras ? '<br><span style="color:var(--gris-2);font-size:.8rem">✨ ' + esc(r.extras) + '</span>' : '') +
-        (r.code_promo ? '<br><span style="color:var(--gris-2);font-size:.8rem">🏷️ ' + esc(r.code_promo) + '</span>' : '') + '</td>' +
+        (r.code_promo ? '<br><span style="color:var(--gris-2);font-size:.8rem">🏷️ ' + esc(r.code_promo) + '</span>' : '') +
+        (r.paiement_statut === "payee" ? '<br><span style="color:#5fc97f;font-size:.8rem;font-weight:700">💳 Payé en ligne</span>' : '') + '</td>' +
       '<td>' + esc(tailleAff(r.taille) || "—") + '<br><span style="color:var(--gris-2);font-size:.8rem">' + esc(r.vehicule||"") + '</span></td>' +
       '<td><b style="color:var(--acc-clair)">' + prixResa(r) + ' $</b></td>' +
       '<td style="max-width:180px">' + esc(r.notes || "—") + '</td>' +
