@@ -2784,44 +2784,8 @@ $("#form").addEventListener("submit", async e => {
     "Client : " + d.nom + "\nTelephone : " + d.tel +
     (d.notes ? "\nNotes : " + d.notes : "");
 
-  /* Notification immédiate sur votre téléphone via ntfy.
-     N'empêche jamais la réservation : si l'envoi échoue, on continue. */
-  if (res.distant && NOTIF.ntfy){
-    /* ⚠️ IMPORTANT : on n'envoie PAS de JSON ici. Un fetch() avec un corps
-       JSON et un en-tête Content-Type personnalisé déclenche une requête
-       CORS "preflight" (OPTIONS) que ntfy.sh ne traite pas correctement
-       depuis un navigateur — la notification échouait silencieusement.
-       On envoie donc le sujet dans l'URL, le message en texte brut, et le
-       titre/les tags/la priorité en paramètres d'URL : aucun en-tête
-       personnalisé, donc aucun preflight, donc ça passe. */
-    try {
-      const dateCourte = new Date(d.date + "T12:00:00")
-        .toLocaleDateString("fr-CA", {weekday:"short", day:"numeric", month:"short"});
-      const lignes = [
-        "👤 " + d.nom + "  ·  " + d.tel,
-        "📅 " + dateLisible + "  à  " + fmt(d.heure),
-        "🧽 " + d.service + "  ·  " + d.prix + " $",
-        "🚗 " + d.taille + (d.vehicule ? "  ·  " + d.vehicule : "")
-      ];
-      if (d.extras) lignes.push("✨ " + d.extras);
-      if (d.code_promo) lignes.push("🏷️ " + d.code_promo + " (–" + rabais + " $)");
-      if (d.notes) lignes.push("📝 " + d.notes);
-      const msg = lignes.join("\n");
-      /* On touche la notification : elle ouvre directement l'espace admin,
-         onglet Réservations (même page, ancre #admin — pas d'en-tête
-         personnalisé donc toujours aucun preflight CORS). */
-      const params = new URLSearchParams({
-        title: "🆕 Réservation — " + d.nom + "  ·  " + dateCourte + " " + fmt(d.heure),
-        tags: "new,blue_car",
-        priority: "4",
-        click: location.origin + location.pathname + "#admin"
-      });
-      fetch("https://ntfy.sh/" + encodeURIComponent(NOTIF.ntfy) + "?" + params.toString(), {
-        method: "POST",
-        body: msg
-      }).catch(() => {});
-    } catch(e){ /* sans effet sur la réservation */ }
-  }
+  /* La notification ntfy (avec bouton « Envoyer la confirmation ») est envoyée par Supabase
+     à chaque nouvelle réservation : voir notif-reservations.sql. */
 
   if (res.distant){
     /* Réservation réellement enregistrée : c'est LA conversion qui compte
