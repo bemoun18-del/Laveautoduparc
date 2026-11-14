@@ -266,7 +266,7 @@ async function enregistrerReservation(session){
   }
   if (res.status === 409) return;
   if (m.code_promo) await consommerPromo(m.code_promo, m.tel);
-  await notifier(r);
+  /* La notification ntfy est envoyée par Supabase (trigger pg_net), plus fiable que depuis ce Worker. */
 }
 async function recevoirWebhook(request, env){
   if (!env.STRIPE_WEBHOOK_SECRET) return new Response("Webhook non configuré.", { status: 500 });
